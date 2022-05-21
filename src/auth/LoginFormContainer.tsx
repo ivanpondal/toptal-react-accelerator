@@ -15,5 +15,5 @@ export default function LoginFormContainer() {
     console.log(loginSuccessResponse);
   }, [loginSuccessResponse]);
 
-  return <LoginForm onLoginRequest={execute} />;
+  return <LoginForm onLoginRequest={execute} loading={status === "pending"}/>;
 }

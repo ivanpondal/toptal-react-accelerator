@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -18,9 +19,12 @@ type LoginFormData = {
 
 export type LoginFormProps = {
   onLoginRequest: (values: LoginFormData) => unknown;
+  loading: boolean;
 };
 
 export default function LoginForm(props: LoginFormProps) {
+  const { loading } = props;
+
   const {
     register,
     handleSubmit,
@@ -47,6 +51,7 @@ export default function LoginForm(props: LoginFormProps) {
           <span data-test="email-error">{errors.email?.message}</span>
         }
         inputProps={{ "data-test": "email" }}
+        disabled={loading}
         {...register("email")}
       />
       <TextField
@@ -62,17 +67,32 @@ export default function LoginForm(props: LoginFormProps) {
           <span data-test="password-error">{errors.password?.message}</span>
         }
         inputProps={{ "data-test": "password" }}
+        disabled={loading}
         {...register("password")}
       />
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        sx={{ mt: 3, mb: 2 }}
-        data-test="submit-login"
-      >
-        Sign In
-      </Button>
+      <Box position="relative" sx={{ mt: 3, mb: 2 }}>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          data-test="submit-login"
+          disabled={loading}
+        >
+          Sign In
+        </Button>
+        {loading && (
+          <CircularProgress
+            size={24}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              mt: -1.5,
+              ml: -1.5,
+            }}
+          />
+        )}
+      </Box>
       <Link href="#" variant="body2">
         {"Don't have an account? Sign Up"}
       </Link>
