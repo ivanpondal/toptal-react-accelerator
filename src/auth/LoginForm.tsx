@@ -6,6 +6,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -19,11 +20,12 @@ type LoginFormData = {
 
 export type LoginFormProps = {
   onLoginRequest: (values: LoginFormData) => unknown;
-  loading: boolean;
+  loading?: boolean;
+  errorMessage?: string;
 };
 
 export default function LoginForm(props: LoginFormProps) {
-  const { loading } = props;
+  const { loading, errorMessage } = props;
 
   const {
     register,
@@ -38,6 +40,11 @@ export default function LoginForm(props: LoginFormProps) {
       noValidate
       sx={{ mt: 1 }}
     >
+      {errorMessage && (
+        <Alert data-test="form-error" severity="error">
+          {errorMessage}
+        </Alert>
+      )}
       <TextField
         margin="normal"
         required

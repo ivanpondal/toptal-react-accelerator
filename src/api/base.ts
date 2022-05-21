@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export const invoiceBackendAPI = axios.create({
   baseURL: "http://localhost:3139",
@@ -6,13 +6,27 @@ export const invoiceBackendAPI = axios.create({
 
 export const UserAPI = {
   login: async (params: { email: string; password: string }) => {
-    const loginResponse = await invoiceBackendAPI.post("/login", {
-      email: params.email,
-      password: params.password,
-    });
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const loginResponse = await invoiceBackendAPI.post<{ token: string }>(
+        "/login",
+        {
+          email: params.email,
+          password: params.password,
+        }
+      );
+      console.log("loginResponse", loginResponse);
+      return loginResponse.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          return Promise.reject(error.response.data);
+        } else {
+          return Promise.reject("Network Error");
+        }
+      }
 
-    console.log("loginResponse", loginResponse);
-
-    return loginResponse.data;
+      return Promise.reject("Unkown Error");
+    }
   },
 };

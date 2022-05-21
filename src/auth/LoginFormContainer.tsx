@@ -15,5 +15,18 @@ export default function LoginFormContainer() {
     console.log(loginSuccessResponse);
   }, [loginSuccessResponse]);
 
-  return <LoginForm onLoginRequest={execute} loading={status === "pending"}/>;
+  let errorMessage;
+  if (error === "Invalid Credentials") {
+    errorMessage = "Invalid user credentials";
+  } else if (error) {
+    errorMessage = "Oops! Something went wrong with the server";
+  }
+
+  return (
+    <LoginForm
+      onLoginRequest={execute}
+      loading={status === "pending"}
+      errorMessage={errorMessage}
+    />
+  );
 }
