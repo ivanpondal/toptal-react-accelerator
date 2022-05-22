@@ -8,34 +8,40 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 
 const schema = yup.object({
+  name: yup.string().required(),
   email: yup.string().email().required(),
   password: yup.string().min(5).max(16).required(),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password")], "passwords must match"),
 });
 
-type LoginFormData = {
+type SignUpFormData = {
+  name: string;
   email: string;
   password: string;
+  confirmPassword: string;
 };
 
-export type LoginFormProps = {
-  onLoginRequest: (values: LoginFormData) => unknown;
+export type SignUpFormProps = {
+  onSignUpRequest: (values: SignUpFormData) => unknown;
   loading?: boolean;
   errorMessage?: string;
 };
 
-export default function LoginForm(props: LoginFormProps) {
+export default function LoginForm(props: SignUpFormProps) {
   const { loading, errorMessage } = props;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({ resolver: yupResolver(schema) });
+  } = useForm<SignUpFormData>({ resolver: yupResolver(schema) });
 
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit(props.onLoginRequest)}
+      onSubmit={handleSubmit(props.onSignUpRequest)}
       noValidate
       sx={{ mt: 1 }}
     >
@@ -44,6 +50,21 @@ export default function LoginForm(props: LoginFormProps) {
           {errorMessage}
         </Alert>
       )}
+
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="name"
+        label="Name"
+        autoComplete="name"
+        autoFocus
+        error={!!errors.name}
+        helperText={<span data-test="name-error">{errors.name?.message}</span>}
+        inputProps={{ "data-test": "name" }}
+        disabled={loading}
+        {...register("name")}
+      />
       <TextField
         margin="normal"
         required
@@ -51,7 +72,6 @@ export default function LoginForm(props: LoginFormProps) {
         id="email"
         label="Email Address"
         autoComplete="email"
-        autoFocus
         error={!!errors.email}
         helperText={
           <span data-test="email-error">{errors.email?.message}</span>
@@ -76,15 +96,33 @@ export default function LoginForm(props: LoginFormProps) {
         disabled={loading}
         {...register("password")}
       />
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        label="Confirm Password"
+        type="password"
+        id="confirmPassword"
+        autoComplete="current-password"
+        error={!!errors.confirmPassword}
+        helperText={
+          <span data-test="confirm-password-error">
+            {errors.confirmPassword?.message}
+          </span>
+        }
+        inputProps={{ "data-test": "confirm-password" }}
+        disabled={loading}
+        {...register("confirmPassword")}
+      />
       <Box position="relative" sx={{ mt: 3, mb: 2 }}>
         <Button
           type="submit"
           fullWidth
           variant="contained"
-          data-test="submit-login"
+          data-test="submit-sign-up"
           disabled={loading}
         >
-          Sign In
+          Sign Up
         </Button>
         {loading && (
           <CircularProgress

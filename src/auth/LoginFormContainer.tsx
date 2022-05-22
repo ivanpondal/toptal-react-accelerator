@@ -1,3 +1,5 @@
+import Link from "@mui/material/Link";
+import NextLink from "next/link";
 import { useEffect, useReducer } from "react";
 import { UserAPI } from "../api/base";
 import { useAsync } from "../hooks/useAsync";
@@ -23,10 +25,15 @@ export default function LoginFormContainer() {
   }
 
   return (
-    <LoginForm
-      onLoginRequest={execute}
-      loading={status === "pending"}
-      errorMessage={errorMessage}
-    />
+    <>
+      <LoginForm
+        onLoginRequest={execute}
+        loading={status === "pending"}
+        errorMessage={errorMessage}
+      />
+      <NextLink href="/sign-up" passHref>
+        <Link variant="body2">Don't have an account? Sign Up</Link>
+      </NextLink>
+    </>
   );
 }
