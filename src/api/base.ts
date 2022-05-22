@@ -80,21 +80,18 @@ export const UserAPI = {
   },
   updateCompanyDetails: async (params: {
     name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
+    address: string;
+    vatNumber: string;
+    regNumber: string;
+    iban?: string;
+    swift?: string;
   }) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
-      const registerResponse = await invoiceBackendAPI.post<{
-        user_id: string;
-      }>("/register", {
-        name: params.name,
-        email: params.email,
-        password: params.password,
-        confirmPassword: params.confirmPassword,
-      });
-      return { userId: registerResponse.data.user_id };
+      const registerResponse = await invoiceBackendAPI.put<{
+        success: boolean;
+      }>("/me/company", params);
+      return registerResponse.data;
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.data) {

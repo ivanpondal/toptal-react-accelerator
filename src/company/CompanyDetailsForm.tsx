@@ -16,7 +16,7 @@ const schema = yup.object({
   swift: yup.string(),
 });
 
-type CompanyDetailsFormData = {
+export type CompanyDetailsFormData = {
   companyName: string;
   companyAddress: string;
   vatNumber: string;
@@ -26,7 +26,7 @@ type CompanyDetailsFormData = {
 };
 
 export type CompanyDetailsFormProps = {
-  onLoginRequest: (values: CompanyDetailsFormData) => unknown;
+  onUpdateRequest: (values: CompanyDetailsFormData) => unknown;
   loading?: boolean;
   errorMessage?: string;
 };
@@ -43,7 +43,7 @@ export default function CompanyDetailsForm(props: CompanyDetailsFormProps) {
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit(props.onLoginRequest)}
+      onSubmit={handleSubmit(props.onUpdateRequest)}
       noValidate
       sx={{ mt: 1 }}
     >
