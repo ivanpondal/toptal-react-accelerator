@@ -17,7 +17,10 @@ export default function SignUpFormContainer() {
 
   useEffect(() => {
     if (signUpSuccessResponse?.userId) {
-      router.push("/login");
+      router.push({
+        pathname: "/login",
+        query: { infoMessage: "Your account has been created successfully!" },
+      });
     }
   }, [signUpSuccessResponse]);
 

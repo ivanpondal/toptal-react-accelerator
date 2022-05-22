@@ -1,5 +1,7 @@
+import Alert from "@mui/material/Alert";
 import Link from "@mui/material/Link";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useReducer } from "react";
 import { UserAPI } from "../api/base";
 import { useAsync } from "../hooks/useAsync";
@@ -12,6 +14,8 @@ export default function LoginFormContainer() {
     error,
     status,
   } = useAsync(UserAPI.login);
+  const router = useRouter();
+  const { infoMessage } = router.query;
 
   useEffect(() => {
     console.log(loginSuccessResponse);
@@ -26,6 +30,7 @@ export default function LoginFormContainer() {
 
   return (
     <>
+      {infoMessage && <Alert sx={{ mt: 1 }}>{infoMessage}</Alert>}
       <LoginForm
         onLoginRequest={execute}
         loading={status === "pending"}
