@@ -56,6 +56,34 @@ export const UserAPI = {
     password: string;
     confirmPassword: string;
   }) => {
+    try {
+      const registerResponse = await invoiceBackendAPI.post<{
+        user_id: string;
+      }>("/register", {
+        name: params.name,
+        email: params.email,
+        password: params.password,
+        confirmPassword: params.confirmPassword,
+      });
+      return { userId: registerResponse.data.user_id };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          return Promise.reject(error.response.data);
+        } else {
+          return Promise.reject("Network Error");
+        }
+      }
+
+      return Promise.reject("Unkown Error");
+    }
+  },
+  updateCompanyDetails: async (params: {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
       const registerResponse = await invoiceBackendAPI.post<{
