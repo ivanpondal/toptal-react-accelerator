@@ -14,7 +14,6 @@ export const UserAPI = {
           password: params.password,
         }
       );
-      console.log("loginResponse", loginResponse);
       return loginResponse.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -44,8 +43,7 @@ export const UserAPI = {
         password: params.password,
         confirmPassword: params.confirmPassword,
       });
-      console.log("loginResponse", registerResponse);
-      return registerResponse.data;
+      return { userId: registerResponse.data.user_id };
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.data) {
