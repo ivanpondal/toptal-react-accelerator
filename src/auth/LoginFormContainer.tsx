@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useReducer } from "react";
 import { UserAPI } from "../api/base";
 import { useAsync } from "../hooks/useAsync";
+import { useAuthContext } from "./AuthContext";
 import LoginForm from "./LoginForm";
 
 export default function LoginFormContainer() {
@@ -14,11 +15,14 @@ export default function LoginFormContainer() {
     error,
     status,
   } = useAsync(UserAPI.login);
+  const { setAuthToken } = useAuthContext();
   const router = useRouter();
   const { infoMessage } = router.query;
 
   useEffect(() => {
-    console.log(loginSuccessResponse);
+    if (loginSuccessResponse) {
+      setAuthToken(loginSuccessResponse.token);
+    }
   }, [loginSuccessResponse]);
 
   let errorMessage;

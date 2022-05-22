@@ -1,10 +1,33 @@
 import axios, { AxiosError } from "axios";
 
 export const invoiceBackendAPI = axios.create({
-  baseURL: "http://localhost:3139",
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
 });
 
 export const UserAPI = {
+  initApiToken: (token: string, handleTokenExpired: () => unknown) => {
+    invoiceBackendAPI.interceptors.request.use((req) => {
+      if (!req.headers) {
+        req.headers = {};
+      }
+      req.headers["x-access-token"] = token;
+      return req;
+    });
+
+    invoiceBackendAPI.interceptors.response.use(
+      (res) => {
+        return res;
+      },
+      (error) => {
+        if (error instanceof AxiosError) {
+          if (error && error.response?.data === "Invalid Token") {
+            handleTokenExpired();
+          }
+        }
+      }
+    );
+  },
+
   login: async (params: { email: string; password: string }) => {
     try {
       const loginResponse = await invoiceBackendAPI.post<{ token: string }>(
