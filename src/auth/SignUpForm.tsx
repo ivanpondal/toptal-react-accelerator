@@ -13,7 +13,8 @@ const schema = yup.object({
   password: yup.string().min(5).max(16).required(),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref("password")], "passwords must match"),
+    .oneOf([yup.ref("password")], "passwords must match")
+    .required("password confirmation is a required field"),
 });
 
 type SignUpFormData = {
