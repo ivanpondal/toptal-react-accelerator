@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
+import { useEffect } from "react";
 
 const schema = yup.object({
   companyName: yup.string().min(3).max(16).required(),
@@ -21,24 +22,35 @@ export type CompanyDetailsFormData = {
   companyAddress: string;
   vatNumber: string;
   registrationNumber: string;
-  iban: string;
-  swift: string;
+  iban?: string;
+  swift?: string;
 };
 
 export type CompanyDetailsFormProps = {
   onUpdateRequest: (values: CompanyDetailsFormData) => unknown;
   loading?: boolean;
   errorMessage?: string;
+  companyDetails?: CompanyDetailsFormData;
 };
 
 export default function CompanyDetailsForm(props: CompanyDetailsFormProps) {
-  const { loading, errorMessage } = props;
+  const { loading, errorMessage, companyDetails } = props;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CompanyDetailsFormData>({ resolver: yupResolver(schema) });
+    reset,
+  } = useForm<CompanyDetailsFormData>({
+    resolver: yupResolver(schema),
+  });
+
+  useEffect(() => {
+    if (companyDetails) {
+      console.log(companyDetails);
+      reset(companyDetails);
+    }
+  }, [companyDetails]);
 
   return (
     <Box

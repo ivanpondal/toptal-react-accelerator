@@ -4,6 +4,20 @@ export const invoiceBackendAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
 });
 
+export type CompanyDetails = {
+  name: string;
+  address: string;
+  vatNumber: string;
+  regNumber: string;
+  iban?: string;
+  swift?: string;
+};
+
+export type User = {
+  name: string;
+  companyDetails?: CompanyDetails;
+};
+
 export const UserAPI = {
   initApiToken: (token: string, handleTokenExpired: () => unknown) => {
     invoiceBackendAPI.interceptors.request.use((req) => {
@@ -86,11 +100,26 @@ export const UserAPI = {
     iban?: string;
     swift?: string;
   }) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
       const registerResponse = await invoiceBackendAPI.put<{
         success: boolean;
       }>("/me/company", params);
+      return registerResponse.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          return Promise.reject(error.response.data);
+        } else {
+          return Promise.reject("Network Error");
+        }
+      }
+
+      return Promise.reject("Unkown Error");
+    }
+  },
+  me: async () => {
+    try {
+      const registerResponse = await invoiceBackendAPI.get<User>("/me");
       return registerResponse.data;
     } catch (error) {
       if (error instanceof AxiosError) {

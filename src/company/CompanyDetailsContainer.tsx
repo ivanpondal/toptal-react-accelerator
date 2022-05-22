@@ -1,5 +1,6 @@
+import { Alert } from "@mui/material";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { UserAPI } from "../api/base";
 import { useAsync } from "../hooks/useAsync";
 import CompanyDetailsForm, {
@@ -24,10 +25,38 @@ export default function CompanyDetailsContainer() {
       })
   );
   const router = useRouter();
+  const { firstLogin } = router.query;
+  const [companyDetails, setCompanyDetails] =
+    useState<CompanyDetailsFormData | null>(null);
+  const [successfulUpdateMessage, setSuccessfulUpdateMessage] = useState<
+    string | null
+  >(null);
+
+  useEffect(() => {
+    UserAPI.me().then((userResponse) => {
+      let companyDetailsReponse = userResponse?.companyDetails;
+      if (companyDetailsReponse) {
+        setCompanyDetails({
+          companyName: companyDetailsReponse.name,
+          companyAddress: companyDetailsReponse.address,
+          vatNumber: companyDetailsReponse.vatNumber,
+          registrationNumber: companyDetailsReponse.regNumber,
+          iban: companyDetailsReponse.iban,
+          swift: companyDetailsReponse.swift,
+        });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (updateSuccessResponse?.success) {
-      router.push("/");
+      if (firstLogin) {
+        router.push("/");
+      } else {
+        setSuccessfulUpdateMessage(
+          "Company details were updated successfully!"
+        );
+      }
     }
   }, [updateSuccessResponse]);
 
@@ -36,11 +65,30 @@ export default function CompanyDetailsContainer() {
     errorMessage = "Oops! Something went wrong with the server";
   }
 
+  let companyDetailsForm;
+  if (companyDetails) {
+    companyDetailsForm = companyDetails;
+  }
+
   return (
-    <CompanyDetailsForm
-      onUpdateRequest={execute}
-      loading={status === "pending"}
-      errorMessage={errorMessage}
-    />
+    <>
+      {firstLogin && (
+        <Alert severity="info" sx={{ mt: 1 }}>
+          You need to set up your company details before using our app!
+        </Alert>
+      )}
+
+      {successfulUpdateMessage && (
+        <Alert data-test="success-message" sx={{ mt: 1 }}>
+          {successfulUpdateMessage}
+        </Alert>
+      )}
+      <CompanyDetailsForm
+        onUpdateRequest={execute}
+        loading={status === "pending"}
+        errorMessage={errorMessage}
+        companyDetails={companyDetailsForm}
+      />
+    </>
   );
 }
