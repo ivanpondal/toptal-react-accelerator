@@ -43,14 +43,8 @@ export default function CompanyDetailsForm(props: CompanyDetailsFormProps) {
     reset,
   } = useForm<CompanyDetailsFormData>({
     resolver: yupResolver(schema),
+    defaultValues: companyDetails,
   });
-
-  useEffect(() => {
-    if (companyDetails) {
-      console.log(companyDetails);
-      reset(companyDetails);
-    }
-  }, [companyDetails]);
 
   return (
     <Box

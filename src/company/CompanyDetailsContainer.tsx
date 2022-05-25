@@ -18,34 +18,37 @@ export default function CompanyDetailsContainer() {
       await UserAPI.updateCompanyDetails({
         name: params.companyName,
         address: params.companyAddress,
-        vatNumber: params.vatNumber,
         regNumber: params.registrationNumber,
-        iban: params.iban,
-        swift: params.swift,
+        ...params,
       })
   );
   const router = useRouter();
   const { firstLogin } = router.query;
+
+  const [loadedCompanyDetails, setLoadedCompanyDetails] =
+    useState<boolean>(false);
   const [companyDetails, setCompanyDetails] =
     useState<CompanyDetailsFormData | null>(null);
+
   const [successfulUpdateMessage, setSuccessfulUpdateMessage] = useState<
     string | null
   >(null);
 
   useEffect(() => {
-    UserAPI.me().then((userResponse) => {
-      let companyDetailsReponse = userResponse?.companyDetails;
-      if (companyDetailsReponse) {
-        setCompanyDetails({
-          companyName: companyDetailsReponse.name,
-          companyAddress: companyDetailsReponse.address,
-          vatNumber: companyDetailsReponse.vatNumber,
-          registrationNumber: companyDetailsReponse.regNumber,
-          iban: companyDetailsReponse.iban,
-          swift: companyDetailsReponse.swift,
-        });
-      }
-    });
+    UserAPI.me()
+      .then((userResponse) => {
+        let companyDetailsReponse = userResponse?.companyDetails;
+        console.log(companyDetailsReponse);
+        if (companyDetailsReponse) {
+          setCompanyDetails({
+            companyName: companyDetailsReponse.name,
+            companyAddress: companyDetailsReponse.address,
+            registrationNumber: companyDetailsReponse.regNumber,
+            ...companyDetailsReponse,
+          });
+        }
+      })
+      .then(() => setLoadedCompanyDetails(true));
   }, []);
 
   useEffect(() => {
@@ -68,6 +71,11 @@ export default function CompanyDetailsContainer() {
   let companyDetailsForm;
   if (companyDetails) {
     companyDetailsForm = companyDetails;
+  }
+
+  if (!loadedCompanyDetails) {
+    // loading company details
+    return null;
   }
 
   return (

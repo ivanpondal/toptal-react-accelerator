@@ -40,7 +40,7 @@ export default function LoginFormContainer() {
         loading={status === "pending"}
         errorMessage={errorMessage}
       />
-      <NextLink href="/sign-up" passHref>
+      <NextLink href="/signup" passHref>
         <Link variant="body2">Don't have an account? Sign Up</Link>
       </NextLink>
     </>

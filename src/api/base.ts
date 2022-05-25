@@ -19,16 +19,23 @@ export type User = {
 };
 
 export const UserAPI = {
-  initApiToken: (token: string, handleTokenExpired: () => unknown) => {
-    invoiceBackendAPI.interceptors.request.use((req) => {
-      if (!req.headers) {
-        req.headers = {};
-      }
-      req.headers["x-access-token"] = token;
-      return req;
-    });
+  tokenInterceptor: NaN,
+  invalidTokenInterceptor: NaN,
 
-    invoiceBackendAPI.interceptors.response.use(
+  initApiToken: function (token: string, handleTokenExpired: () => unknown) {
+    invoiceBackendAPI.interceptors.request.eject(this.tokenInterceptor);
+    this.tokenInterceptor = invoiceBackendAPI.interceptors.request.use(
+      (req) => {
+        if (!req.headers) {
+          req.headers = {};
+        }
+        req.headers["x-access-token"] = token;
+        return req;
+      }
+    );
+
+    invoiceBackendAPI.interceptors.request.eject(this.invalidTokenInterceptor);
+    this.invalidTokenInterceptor = invoiceBackendAPI.interceptors.response.use(
       (res) => {
         return res;
       },
