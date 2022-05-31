@@ -1,10 +1,10 @@
 import { IconButton, Menu, MenuItem } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRowId } from "@mui/x-data-grid";
 import MenuIcon from "@mui/icons-material/Menu";
-import Context from "@mui/base/TabsUnstyled/TabsContext";
 import { useState } from "react";
+import Link from "next/link";
 
-function ContextMenu() {
+function ContextMenu(props: { rowId: GridRowId }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -20,8 +20,10 @@ function ContextMenu() {
         <MenuIcon />
       </IconButton>
       <Menu open={open} anchorEl={anchorEl} onClose={handleClose}>
-        <MenuItem>Add new invoice</MenuItem>
-        <MenuItem>Edit client</MenuItem>
+        <MenuItem href="">Add new invoice</MenuItem>
+        <Link href={`/clients/${props.rowId}/edit/`} passHref>
+          <MenuItem>Edit client</MenuItem>
+        </Link>
       </Menu>
     </>
   );
@@ -59,12 +61,12 @@ const columns: GridColDef[] = [
     headerName: "",
     type: "actions",
     sortable: false,
-    renderCell: (params) => <ContextMenu />,
+    renderCell: (params) => <ContextMenu rowId={params.id} />,
   },
 ];
 const dummyRows = [
   {
-    id: 1,
+    id: 234,
     clientName: "Bob",
     companyName: "Fantasia",
     totalBilled: 234.5,
