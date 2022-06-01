@@ -1,8 +1,27 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 export const invoiceBackendAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
 });
+
+async function executeRequest<T>(
+  request: () => Promise<AxiosResponse<T, any>>
+) {
+  try {
+    const requestResponse = await request();
+    return requestResponse.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.data) {
+        return Promise.reject(error.response.data);
+      } else {
+        return Promise.reject("Network Error");
+      }
+    }
+
+    return Promise.reject("Unkown Error");
+  }
+}
 
 export type CompanyDetails = {
   name: string;
@@ -50,26 +69,12 @@ export const UserAPI = {
   },
 
   login: async (params: { email: string; password: string }) => {
-    try {
-      const loginResponse = await invoiceBackendAPI.post<{ token: string }>(
-        "/login",
-        {
-          email: params.email,
-          password: params.password,
-        }
-      );
-      return loginResponse.data;
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response?.data) {
-          return Promise.reject(error.response.data);
-        } else {
-          return Promise.reject("Network Error");
-        }
-      }
-
-      return Promise.reject("Unkown Error");
-    }
+    return await executeRequest(() =>
+      invoiceBackendAPI.post<{ token: string }>("/login", {
+        email: params.email,
+        password: params.password,
+      })
+    );
   },
   register: async (params: {
     name: string;
@@ -77,27 +82,20 @@ export const UserAPI = {
     password: string;
     confirmPassword: string;
   }) => {
-    try {
-      const registerResponse = await invoiceBackendAPI.post<{
+    return executeRequest(() =>
+      invoiceBackendAPI.post<{
         user_id: string;
       }>("/register", {
         name: params.name,
         email: params.email,
         password: params.password,
         confirmPassword: params.confirmPassword,
-      });
-      return { userId: registerResponse.data.user_id };
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response?.data) {
-          return Promise.reject(error.response.data);
-        } else {
-          return Promise.reject("Network Error");
-        }
-      }
-
-      return Promise.reject("Unkown Error");
-    }
+      })
+    ).then((response) => {
+      return {
+        userId: response.user_id,
+      };
+    });
   },
   updateCompanyDetails: async (params: {
     name: string;
@@ -107,37 +105,36 @@ export const UserAPI = {
     iban?: string;
     swift?: string;
   }) => {
-    try {
-      const registerResponse = await invoiceBackendAPI.put<{
+    return executeRequest(() =>
+      invoiceBackendAPI.put<{
         success: boolean;
-      }>("/me/company", params);
-      return registerResponse.data;
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response?.data) {
-          return Promise.reject(error.response.data);
-        } else {
-          return Promise.reject("Network Error");
-        }
-      }
-
-      return Promise.reject("Unkown Error");
-    }
+      }>("/me/company", params)
+    );
   },
   me: async () => {
-    try {
-      const registerResponse = await invoiceBackendAPI.get<User>("/me");
-      return registerResponse.data;
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response?.data) {
-          return Promise.reject(error.response.data);
-        } else {
-          return Promise.reject("Network Error");
-        }
-      }
+    return executeRequest(() => invoiceBackendAPI.get<User>("/me"));
+  },
+};
 
-      return Promise.reject("Unkown Error");
-    }
+export type Page<T> = {
+  result: T[];
+  total: number;
+};
+
+export type ClientInvoicesAggregate = {
+  totalBilled: number;
+  invoicesCount: number;
+  id: string;
+  user_id: string;
+  email: string;
+  name: string;
+  companyDetails: CompanyDetails;
+};
+
+export const ClientsAPI = {
+  clients: async () => {
+    return await executeRequest(() =>
+      invoiceBackendAPI.get<Page<ClientInvoicesAggregate>>("/clients")
+    );
   },
 };
