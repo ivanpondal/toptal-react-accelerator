@@ -4,8 +4,12 @@ import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
 import { useEffect } from "react";
 import { ClientAPI } from "../api/base";
 import { useAsync } from "../hooks/useAsync";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function ClientsTableContainer() {
+  const router = useRouter();
+
   const {
     execute,
     value: clientsResponse,
@@ -17,9 +21,8 @@ export default function ClientsTableContainer() {
       .then((res) =>
         res.map((client) => {
           return {
-            clientName: client.name,
             companyName: client.companyDetails.name,
-            ...client
+            ...client,
           };
         })
       )
@@ -37,12 +40,20 @@ export default function ClientsTableContainer() {
         <Typography variant="h5" sx={{ flexGrow: 1 }}>
           Latest clients
         </Typography>
-        <Button href="/clients">All Clients</Button>
-        <IconButton href="/clients/new">
-          <AddBoxIcon color="primary" />
-        </IconButton>
+        <Link href="/clients" passHref>
+          <Button data-test="view-all-clients">All Clients</Button>
+        </Link>
+        <Link href="/clients/new" passHref>
+          <IconButton data-test="add-client">
+            <AddBoxIcon color="primary" />
+          </IconButton>
+        </Link>
       </Box>
-      <ClientsTable clients={clients} loading={status === "pending"} />
+      <ClientsTable
+        clients={clients}
+        loading={status === "pending"}
+        onRowClick={(rowId) => router.push(`/clients/${rowId}`)}
+      />
     </>
   );
 }

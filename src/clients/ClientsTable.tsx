@@ -1,5 +1,15 @@
 import { IconButton, Menu, MenuItem } from "@mui/material";
-import { DataGrid, GridColDef, GridRowId } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridCell,
+  GridCellProps,
+  GridColDef,
+  GridLoadingOverlay,
+  GridNoRowsOverlay,
+  GridRow,
+  GridRowId,
+  GridRowProps,
+} from "@mui/x-data-grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import Link from "next/link";
@@ -32,7 +42,7 @@ function ContextMenu(props: { rowId: GridRowId }) {
 
 const columns: GridColDef[] = [
   {
-    field: "clientName",
+    field: "name",
     headerName: "Name",
     flex: 1,
     sortable: false,
@@ -58,7 +68,7 @@ const columns: GridColDef[] = [
     type: "number",
   },
   {
-    field: "contextualAction",
+    field: "actions",
     headerName: "",
     type: "actions",
     sortable: false,
@@ -66,19 +76,44 @@ const columns: GridColDef[] = [
   },
 ];
 
+const DataTestLoadingOverlay = () => (
+  <GridLoadingOverlay data-test="loading-overlay" />
+);
+
+const DataTestRow = (
+  props: React.HTMLAttributes<HTMLDivElement> & GridRowProps
+) => <GridRow data-test={`client-row-${props.rowId}}`} {...props} />;
+
+const DataTestCell = (props: GridCellProps<any, any>) => (
+  <GridCell data-test={`client-${props.field}`} {...props} />
+);
+
+const DataTestNoRowsOverlay = () => (
+  <GridNoRowsOverlay data-test="empty-placeholder" />
+);
+
 export default function ClientsTable(props: {
   clients: ClientInvoicesAggregate[];
   loading: boolean;
+  onRowClick: (rowId: GridRowId) => unknown;
 }) {
-  const { clients, loading } = props;
+  const { clients, loading, onRowClick } = props;
   return (
     <DataGrid
+      data-test="clients-table"
       columns={columns}
       rows={clients}
       hideFooter
       disableColumnMenu
       autoHeight
       loading={loading}
+      onRowClick={(params) => onRowClick(params.id)}
+      components={{
+        LoadingOverlay: DataTestLoadingOverlay,
+        Row: DataTestRow,
+        Cell: DataTestCell,
+        NoRowsOverlay: DataTestNoRowsOverlay,
+      }}
     />
   );
 }
