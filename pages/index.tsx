@@ -18,10 +18,10 @@ const Home: NextPage = () => {
         <Button onClick={logout}>Logout</Button>
         <Container component="main" maxWidth="lg">
           <Grid container spacing={2}>
-            <Grid item lg={6}>
+            <Grid item lg={6} sm={12}>
               <ClientsTableContainer />
             </Grid>
-            <Grid item lg={6}>
+            <Grid item lg={6} sm={12}>
               <InvoicesTableContainer />
             </Grid>
           </Grid>
