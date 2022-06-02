@@ -50,7 +50,13 @@ const columns: GridColDef[] = [
 ];
 
 export default function ClientsTable(props: {
-  clients: ClientInvoicesAggregate[];
+  clients: Array<{
+    totalBilled: number;
+    invoicesCount: number;
+    id: string;
+    name: string;
+    companyName: string;
+  }>;
   loading: boolean;
   onRowClick: (rowId: GridRowId) => unknown;
 }) {

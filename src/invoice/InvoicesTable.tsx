@@ -58,7 +58,14 @@ const columns: GridColDef[] = [
 ];
 
 export const InvoicesTable = (props: {
-  invoices: any[];
+  invoices: Array<{
+    id: string;
+    number: string;
+    company: string;
+    date: number;
+    project: string;
+    price: number;
+  }>;
   loading: boolean;
   onRowClick: (rowId: GridRowId) => unknown;
 }) => {
