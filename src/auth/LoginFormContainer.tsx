@@ -34,7 +34,9 @@ export default function LoginFormContainer() {
 
   return (
     <>
-      {infoMessage && <Alert sx={{ mt: 1 }}>{infoMessage}</Alert>}
+      {infoMessage && !errorMessage && (
+        <Alert sx={{ mt: 1 }}>{infoMessage}</Alert>
+      )}
       <LoginForm
         onLoginRequest={execute}
         loading={status === "pending"}
