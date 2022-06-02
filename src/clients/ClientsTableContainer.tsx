@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Alert, Box, Button, IconButton, Typography } from "@mui/material";
 import ClientsTable from "./ClientsTable";
 import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
 import { useEffect } from "react";
@@ -34,9 +34,14 @@ export default function ClientsTableContainer() {
 
   let clients = clientsResponse ? clientsResponse : [];
 
+  let errorMessage;
+  if (error) {
+    errorMessage = "Oops! Something went wrong with the server";
+  }
+
   return (
     <>
-      <Box sx={{ display: "flex", mb: 2 }}>
+      <Box sx={{ display: "flex", mb: 1 }}>
         <Typography variant="h5" sx={{ flexGrow: 1 }}>
           Latest clients
         </Typography>
@@ -49,6 +54,11 @@ export default function ClientsTableContainer() {
           </IconButton>
         </Link>
       </Box>
+      {errorMessage && (
+        <Alert sx={{ mb: 1 }} severity="error" data-test="clients-fetch-error">
+          {errorMessage}
+        </Alert>
+      )}
       <ClientsTable
         clients={clients}
         loading={status === "pending"}
