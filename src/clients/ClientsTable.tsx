@@ -3,6 +3,7 @@ import { DataGrid, GridColDef, GridRowId } from "@mui/x-data-grid";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import Link from "next/link";
+import { ClientInvoicesAggregate } from "../api/base";
 
 function ContextMenu(props: { rowId: GridRowId }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -50,7 +51,7 @@ const columns: GridColDef[] = [
     type: "number",
   },
   {
-    field: "invoiceCount",
+    field: "invoicesCount",
     headerName: "Invoice count",
     flex: 1,
     sortable: false,
@@ -64,31 +65,20 @@ const columns: GridColDef[] = [
     renderCell: (params) => <ContextMenu rowId={params.id} />,
   },
 ];
-const dummyRows = [
-  {
-    id: 234,
-    clientName: "Bob",
-    companyName: "Fantasia",
-    totalBilled: 234.5,
-    invoiceCount: 324,
-  },
-  {
-    id: 2,
-    clientName: "Bob",
-    companyName: "Fantasia",
-    totalBilled: 234.5,
-    invoiceCount: 324,
-  },
-];
 
-export default function ClientsTable() {
+export default function ClientsTable(props: {
+  clients: ClientInvoicesAggregate[];
+  loading: boolean;
+}) {
+  const { clients, loading } = props;
   return (
     <DataGrid
       columns={columns}
-      rows={dummyRows}
+      rows={clients}
       hideFooter
       disableColumnMenu
       autoHeight
+      loading={loading}
     />
   );
 }

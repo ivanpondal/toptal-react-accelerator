@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { encode } from "punycode";
 
 export const invoiceBackendAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -116,11 +117,6 @@ export const UserAPI = {
   },
 };
 
-export type Page<T> = {
-  result: T[];
-  total: number;
-};
-
 export type ClientInvoicesAggregate = {
   totalBilled: number;
   invoicesCount: number;
@@ -131,10 +127,25 @@ export type ClientInvoicesAggregate = {
   companyDetails: CompanyDetails;
 };
 
-export const ClientsAPI = {
-  clients: async () => {
+export type ClientListingSorting = {
+  clientName?: "asc" | "desc";
+  companyName?: "asc" | "desc";
+  totalBilled?: "asc" | "desc";
+  invoicesCount?: "asc" | "desc";
+  creation?: "asc" | "desc";
+};
+
+export const ClientAPI = {
+  getClients: async function (params: {
+    sort?: ClientListingSorting;
+    limit?: number;
+  }) {
+    const encodedParams = encodeURIComponent(JSON.stringify(params));
+
     return await executeRequest(() =>
-      invoiceBackendAPI.get<Page<ClientInvoicesAggregate>>("/clients")
+      invoiceBackendAPI.get<{ clients: ClientInvoicesAggregate[] }>(
+        `/clients?params=${encodedParams}`
+      )
     );
   },
 };
