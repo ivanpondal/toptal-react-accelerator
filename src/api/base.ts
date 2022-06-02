@@ -128,10 +128,6 @@ export type ClientInvoicesAggregate = {
 };
 
 export type ClientListingSorting = {
-  clientName?: "asc" | "desc";
-  companyName?: "asc" | "desc";
-  totalBilled?: "asc" | "desc";
-  invoicesCount?: "asc" | "desc";
   creation?: "asc" | "desc";
 };
 
@@ -145,6 +141,50 @@ export const ClientAPI = {
     return await executeRequest(() =>
       invoiceBackendAPI.get<{ clients: ClientInvoicesAggregate[] }>(
         `/clients?params=${encodedParams}`
+      )
+    );
+  },
+};
+
+export type InvoiceListingSorting = {
+  creation?: "asc" | "desc";
+};
+
+export type InvoiceData = {
+  id: string;
+  invoice_number: string;
+  user_id: string;
+  client_id: string;
+  date: number;
+  dueDate: number;
+  value: number;
+  projectCode: string;
+  meta?: Record<string, any>;
+};
+
+export type ClientData = {
+  id: string;
+  user_id: string;
+  email: string;
+  name: string;
+  companyDetails: CompanyDetails;
+};
+
+type InvoiceWithClientDetails = {
+  invoice: InvoiceData;
+  client: ClientData;
+};
+
+export const InvoiceAPI = {
+  getInvoices: async function (params: {
+    sort?: InvoiceListingSorting;
+    limit?: number;
+  }) {
+    const encodedParams = encodeURIComponent(JSON.stringify(params));
+
+    return await executeRequest(() =>
+      invoiceBackendAPI.get<{ invoices: InvoiceWithClientDetails[] }>(
+        `/invoices?params=${encodedParams}`
       )
     );
   },

@@ -7,6 +7,7 @@ import { useAuthContext } from "../src/auth/AuthContext";
 import { AuthGuard } from "../src/auth/AuthGuard";
 import ClientsTableContainer from "../src/clients/ClientsTableContainer";
 import { CompanyDetailsGuard } from "../src/company/CompanyDetailsGuard";
+import { InvoicesTableContainer } from "../src/invoice/InvoicesTableContainer";
 
 const Home: NextPage = () => {
   const { logout } = useAuthContext();
@@ -15,10 +16,13 @@ const Home: NextPage = () => {
     <AuthGuard>
       <CompanyDetailsGuard>
         <Button onClick={logout}>Logout</Button>
-        <Container component="main" maxWidth="md">
-          <Grid container>
-            <Grid item xs={12}>
+        <Container component="main" maxWidth="lg">
+          <Grid container spacing={2}>
+            <Grid item lg={6}>
               <ClientsTableContainer />
+            </Grid>
+            <Grid item lg={6}>
+              <InvoicesTableContainer />
             </Grid>
           </Grid>
         </Container>
