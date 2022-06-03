@@ -1,9 +1,15 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Container, Box, Typography } from "@mui/material";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { AuthGuard } from "../../src/auth/AuthGuard";
 import ClientCreationContainer from "../../src/clients/ClientCreationContainer";
+import ClientEditContainer from "../../src/clients/ClientEditContainer";
 import { CompanyDetailsGuard } from "../../src/company/CompanyDetailsGuard";
 
-export default function NewClient() {
+export default function EditClient() {
+  const router = useRouter();
+  const { id: clientId } = router.query;
+
   return (
     <AuthGuard>
       <CompanyDetailsGuard>
@@ -17,9 +23,9 @@ export default function NewClient() {
             }}
           >
             <Typography component="h1" variant="h5">
-              Create client
+              Edit client
             </Typography>
-            <ClientCreationContainer />
+            <ClientEditContainer clientId={clientId} />
           </Box>
         </Container>
       </CompanyDetailsGuard>

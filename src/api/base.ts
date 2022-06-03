@@ -146,10 +146,17 @@ export const ClientAPI = {
   },
   create: async function (params: Omit<ClientData, "id" | "user_id">) {
     return await executeRequest(() =>
-      invoiceBackendAPI.post<{ client: { id: string } & ClientData }>(
-        "/clients",
-        params
-      )
+      invoiceBackendAPI.post<{ client: ClientData }>("/clients", params)
+    );
+  },
+  update: async function (params: Omit<ClientData, "user_id">) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.put<{ client: ClientData }>("/clients", params)
+    );
+  },
+  getById: async function (id: string) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.get<{ client: ClientData }>(`/clients/${id}`)
     );
   },
 };

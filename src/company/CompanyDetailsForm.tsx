@@ -6,7 +6,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
-import { useEffect } from "react";
 
 const schema = yup.object({
   companyName: yup.string().min(3).max(16).required(),

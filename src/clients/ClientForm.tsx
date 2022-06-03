@@ -25,16 +25,17 @@ export type ClientDetailsFormData = {
   companyAddress: string;
   vatNumber: string;
   registrationNumber: string;
-  iban: string;
-  swift: string;
+  iban?: string;
+  swift?: string;
 };
 
 export type ClientDetailsFormProps = {
-  onUpdateRequest: (values: ClientDetailsFormData) => unknown;
+  onSubmitRequest: (values: ClientDetailsFormData) => unknown;
   loading?: boolean;
   errorMessage?: string;
   successMessage?: string;
   clientDetails?: ClientDetailsFormData;
+  resetOnSubmit?: boolean;
 };
 
 export default function ClientForm(props: ClientDetailsFormProps) {
@@ -43,7 +44,8 @@ export default function ClientForm(props: ClientDetailsFormProps) {
     errorMessage,
     successMessage,
     clientDetails,
-    onUpdateRequest,
+    onSubmitRequest,
+    resetOnSubmit = true,
   } = props;
 
   const {
@@ -60,8 +62,10 @@ export default function ClientForm(props: ClientDetailsFormProps) {
     <Box
       component="form"
       onSubmit={handleSubmit((values: ClientDetailsFormData) => {
-        onUpdateRequest(values);
-        reset();
+        onSubmitRequest(values);
+        if (resetOnSubmit) {
+          reset();
+        }
       })}
       noValidate
       sx={{ mt: 1 }}

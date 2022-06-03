@@ -2,7 +2,7 @@ import { ClientAPI } from "../api/base";
 import { useAsync } from "../hooks/useAsync";
 import ClientForm, { ClientDetailsFormData } from "./ClientForm";
 
-export default function ClientContainer() {
+export default function ClientCreationContainer() {
   const {
     execute,
     value: updateSuccessResponse,
@@ -36,7 +36,7 @@ export default function ClientContainer() {
 
   return (
     <ClientForm
-      onUpdateRequest={execute}
+      onSubmitRequest={execute}
       errorMessage={errorMessage}
       successMessage={successMessage}
       loading={status === "pending"}
