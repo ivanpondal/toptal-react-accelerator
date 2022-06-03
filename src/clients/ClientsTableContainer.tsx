@@ -16,7 +16,7 @@ export default function ClientsTableContainer() {
     error,
     status,
   } = useAsync((params: any) =>
-    ClientAPI.getClients(params)
+    ClientAPI.getAll(params)
       .then((res) => res.clients)
       .then((res) =>
         res.map((client) => {

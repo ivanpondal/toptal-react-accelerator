@@ -71,10 +71,7 @@ export const UserAPI = {
 
   login: async (params: { email: string; password: string }) => {
     return await executeRequest(() =>
-      invoiceBackendAPI.post<{ token: string }>("/login", {
-        email: params.email,
-        password: params.password,
-      })
+      invoiceBackendAPI.post<{ token: string }>("/login", params)
     );
   },
   register: async (params: {
@@ -86,12 +83,7 @@ export const UserAPI = {
     return executeRequest(() =>
       invoiceBackendAPI.post<{
         user_id: string;
-      }>("/register", {
-        name: params.name,
-        email: params.email,
-        password: params.password,
-        confirmPassword: params.confirmPassword,
-      })
+      }>("/register", params)
     ).then((response) => {
       return {
         userId: response.user_id,
@@ -131,8 +123,16 @@ export type ClientListingSorting = {
   creation?: "asc" | "desc";
 };
 
+export type ClientData = {
+  id: string;
+  user_id: string;
+  email: string;
+  name: string;
+  companyDetails: CompanyDetails;
+};
+
 export const ClientAPI = {
-  getClients: async function (params: {
+  getAll: async function (params: {
     sort?: ClientListingSorting;
     limit?: number;
   }) {
@@ -142,6 +142,21 @@ export const ClientAPI = {
       invoiceBackendAPI.get<{ clients: ClientInvoicesAggregate[] }>(
         `/clients?params=${encodedParams}`
       )
+    );
+  },
+  create: async function (params: Omit<ClientData, "id" | "user_id">) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.post<{ client: ClientData }>("/clients", params)
+    );
+  },
+  update: async function (params: Omit<ClientData, "user_id">) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.put<{ client: ClientData }>("/clients", params)
+    );
+  },
+  getById: async function (id: string) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.get<{ client: ClientData }>(`/clients/${id}`)
     );
   },
 };
@@ -162,21 +177,13 @@ export type InvoiceData = {
   meta?: Record<string, any>;
 };
 
-export type ClientData = {
-  id: string;
-  user_id: string;
-  email: string;
-  name: string;
-  companyDetails: CompanyDetails;
-};
-
 type InvoiceWithClientDetails = {
   invoice: InvoiceData;
   client: ClientData;
 };
 
 export const InvoiceAPI = {
-  getInvoices: async function (params: {
+  getAll: async function (params: {
     sort?: InvoiceListingSorting;
     limit?: number;
   }) {

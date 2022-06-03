@@ -16,7 +16,7 @@ export const InvoicesTableContainer = () => {
     error,
     status,
   } = useAsync((params: any) =>
-    InvoiceAPI.getInvoices(params)
+    InvoiceAPI.getAll(params)
       .then((res) => res.invoices)
       .then((res) =>
         res.map((invoiceWithDetails) => {

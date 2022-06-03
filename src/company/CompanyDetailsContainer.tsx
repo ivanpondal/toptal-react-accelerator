@@ -38,7 +38,6 @@ export default function CompanyDetailsContainer() {
     UserAPI.me()
       .then((userResponse) => {
         let companyDetailsReponse = userResponse?.companyDetails;
-        console.log(companyDetailsReponse);
         if (companyDetailsReponse) {
           setCompanyDetails({
             companyName: companyDetailsReponse.name,
