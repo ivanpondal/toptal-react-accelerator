@@ -33,16 +33,24 @@ export type ClientDetailsFormProps = {
   onUpdateRequest: (values: ClientDetailsFormData) => unknown;
   loading?: boolean;
   errorMessage?: string;
+  successMessage?: string;
   clientDetails?: ClientDetailsFormData;
 };
 
 export default function ClientForm(props: ClientDetailsFormProps) {
-  const { loading, errorMessage, clientDetails, onUpdateRequest } = props;
+  const {
+    loading,
+    errorMessage,
+    successMessage,
+    clientDetails,
+    onUpdateRequest,
+  } = props;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<ClientDetailsFormData>({
     resolver: yupResolver(schema),
     defaultValues: clientDetails,
@@ -51,10 +59,19 @@ export default function ClientForm(props: ClientDetailsFormProps) {
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit(onUpdateRequest)}
+      onSubmit={handleSubmit((values: ClientDetailsFormData) => {
+        onUpdateRequest(values);
+        reset();
+      })}
       noValidate
       sx={{ mt: 1 }}
     >
+      {successMessage && (
+        <Alert data-test="form-success" severity="success">
+          {successMessage}
+        </Alert>
+      )}
+
       {errorMessage && (
         <Alert data-test="form-error" severity="error">
           {errorMessage}
