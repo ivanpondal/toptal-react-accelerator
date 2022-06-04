@@ -54,7 +54,9 @@ export default function LoginForm(props: LoginFormProps) {
         autoFocus
         error={!!errors.email}
         helperText={
-          <span data-test="email-error">{errors.email?.message}</span>
+          errors.email && (
+            <span data-test="email-error">{errors.email?.message}</span>
+          )
         }
         inputProps={{ "data-test": "email" }}
         disabled={loading}

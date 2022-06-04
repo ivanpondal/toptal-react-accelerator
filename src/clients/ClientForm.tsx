@@ -165,7 +165,7 @@ export default function ClientForm(props: ClientDetailsFormProps) {
       <LoadingButton
         sx={{ mt: 2, mb: 2 }}
         type="submit"
-        dataTestId="submit-login"
+        dataTestId="submit-client"
         loading={loading}
       >
         Update

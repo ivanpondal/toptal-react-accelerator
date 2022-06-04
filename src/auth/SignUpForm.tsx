@@ -6,6 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
+import FormTextField from "../components/FormTextField";
+import LoadingButton from "../components/LoadingButton";
 
 const schema = yup.object({
   name: yup.string().required(),
@@ -52,92 +54,58 @@ export default function LoginForm(props: SignUpFormProps) {
         </Alert>
       )}
 
-      <TextField
-        margin="normal"
-        required
-        fullWidth
+      <FormTextField
         id="name"
         label="Name"
-        autoComplete="name"
-        autoFocus
-        error={!!errors.name}
-        helperText={<span data-test="name-error">{errors.name?.message}</span>}
-        inputProps={{ "data-test": "name" }}
+        errorField={errors.name}
+        dataTestId="name"
+        register={register}
         disabled={loading}
-        {...register("name")}
-      />
-      <TextField
-        margin="normal"
         required
-        fullWidth
+        autoFocus
+      />
+
+      <FormTextField
         id="email"
         label="Email Address"
-        autoComplete="email"
-        error={!!errors.email}
-        helperText={
-          <span data-test="email-error">{errors.email?.message}</span>
-        }
-        inputProps={{ "data-test": "email" }}
+        errorField={errors.email}
+        dataTestId="email"
+        register={register}
         disabled={loading}
-        {...register("email")}
-      />
-      <TextField
-        margin="normal"
         required
-        fullWidth
+      />
+
+      <FormTextField
+        id="password"
         label="Password"
         type="password"
-        id="password"
-        autoComplete="current-password"
-        error={!!errors.password}
-        helperText={
-          <span data-test="password-error">{errors.password?.message}</span>
-        }
-        inputProps={{ "data-test": "password" }}
+        errorField={errors.password}
+        dataTestId="password"
+        register={register}
         disabled={loading}
-        {...register("password")}
-      />
-      <TextField
-        margin="normal"
         required
-        fullWidth
+        autoComplete="current-password"
+      />
+
+      <FormTextField
+        id="confirmPassword"
         label="Confirm Password"
         type="password"
-        id="confirmPassword"
-        autoComplete="current-password"
-        error={!!errors.confirmPassword}
-        helperText={
-          <span data-test="confirm-password-error">
-            {errors.confirmPassword?.message}
-          </span>
-        }
-        inputProps={{ "data-test": "confirm-password" }}
+        errorField={errors.confirmPassword}
+        dataTestId="confirm-password"
+        register={register}
         disabled={loading}
-        {...register("confirmPassword")}
+        required
       />
-      <Box position="relative" sx={{ mt: 3, mb: 2 }}>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          data-test="submit-sign-up"
-          disabled={loading}
-        >
-          Sign Up
-        </Button>
-        {loading && (
-          <CircularProgress
-            size={24}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              mt: -1.5,
-              ml: -1.5,
-            }}
-          />
-        )}
-      </Box>
+
+      <LoadingButton
+        sx={{ mt: 2, mb: 2 }}
+        type="submit"
+        dataTestId="submit-sign-up"
+        loading={loading}
+      >
+        Sign Up
+      </LoadingButton>
     </Box>
   );
 }

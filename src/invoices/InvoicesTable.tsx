@@ -71,21 +71,22 @@ export const InvoicesTable = (props: {
 }) => {
   const { invoices, loading, onRowClick } = props;
   return (
-    <DataGrid
-      data-test="invoices-table"
-      columns={columns}
-      rows={invoices}
-      hideFooter
-      disableColumnMenu
-      autoHeight
-      loading={loading}
-      onRowClick={(params) => onRowClick(params.id)}
-      components={{
-        LoadingOverlay: DataTestLoadingOverlay,
-        Row: DataTestRow("invoice"),
-        Cell: DataTestCell("invoice"),
-        NoRowsOverlay: DataTestNoRowsOverlay,
-      }}
-    />
+    <div data-test="invoices-table">
+      <DataGrid
+        columns={columns}
+        rows={invoices}
+        hideFooter
+        disableColumnMenu
+        autoHeight
+        loading={loading}
+        onRowClick={(params) => onRowClick(params.id)}
+        components={{
+          LoadingOverlay: DataTestLoadingOverlay,
+          Row: DataTestRow("invoice"),
+          Cell: DataTestCell("invoice"),
+          NoRowsOverlay: DataTestNoRowsOverlay,
+        }}
+      />
+    </div>
   );
 };

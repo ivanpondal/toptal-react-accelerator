@@ -1,11 +1,10 @@
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
+import LoadingButton from "../components/LoadingButton";
+import FormTextField from "../components/FormTextField";
 
 const schema = yup.object({
   companyName: yup.string().min(3).max(16).required(),
@@ -57,126 +56,74 @@ export default function CompanyDetailsForm(props: CompanyDetailsFormProps) {
           {errorMessage}
         </Alert>
       )}
-      <TextField
-        margin="normal"
-        required
-        fullWidth
+
+      <FormTextField
         id="companyName"
         label="Company Name"
-        autoFocus
-        error={!!errors.companyName}
-        helperText={
-          <span data-test="company-name-error">
-            {errors.companyName?.message}
-          </span>
-        }
-        inputProps={{ "data-test": "company-name" }}
+        errorField={errors.companyName}
+        dataTestId="company-name"
+        register={register}
         disabled={loading}
-        {...register("companyName")}
+        required
+        autoFocus
       />
 
-      <TextField
-        margin="normal"
-        required
-        fullWidth
+      <FormTextField
         id="companyAddress"
         label="Company Address"
-        error={!!errors.companyAddress}
-        helperText={
-          <span data-test="company-address-error">
-            {errors.companyAddress?.message}
-          </span>
-        }
-        inputProps={{ "data-test": "company-address" }}
+        errorField={errors.companyAddress}
+        dataTestId="company-address"
+        register={register}
         disabled={loading}
-        {...register("companyAddress")}
+        required
       />
 
-      <TextField
-        margin="normal"
-        required
-        fullWidth
+      <FormTextField
         id="vatNumber"
         label="VAT Number"
-        error={!!errors.vatNumber}
-        helperText={
-          <span data-test="company-vat-error">{errors.vatNumber?.message}</span>
-        }
-        inputProps={{ "data-test": "company-vat" }}
+        errorField={errors.vatNumber}
+        dataTestId="company-vat"
+        register={register}
         disabled={loading}
-        {...register("vatNumber")}
+        required
       />
 
-      <TextField
-        margin="normal"
-        required
-        fullWidth
+      <FormTextField
         id="registrationNumber"
         label="Registration Number"
-        error={!!errors.registrationNumber}
-        helperText={
-          <span data-test="company-reg-error">
-            {errors.registrationNumber?.message}
-          </span>
-        }
-        inputProps={{ "data-test": "company-reg" }}
+        errorField={errors.registrationNumber}
+        dataTestId="company-reg-number"
+        register={register}
         disabled={loading}
-        {...register("registrationNumber")}
+        required
       />
 
-      <TextField
-        margin="normal"
-        required
-        fullWidth
+      <FormTextField
         id="iban"
         label="IBAN"
-        error={!!errors.iban}
-        helperText={
-          <span data-test="company-iban-error">{errors.iban?.message}</span>
-        }
-        inputProps={{ "data-test": "company-iban" }}
+        errorField={errors.iban}
+        dataTestId="company-iban"
+        register={register}
         disabled={loading}
-        {...register("iban")}
       />
 
-      <TextField
-        margin="normal"
-        required
-        fullWidth
+      <FormTextField
         id="swift"
         label="Swift"
-        error={!!errors.swift}
-        helperText={
-          <span data-test="company-swift-error">{errors.swift?.message}</span>
-        }
-        inputProps={{ "data-test": "company-swift" }}
+        errorField={errors.swift}
+        dataTestId="company-swift"
+        register={register}
         disabled={loading}
-        {...register("swift")}
       />
 
-      <Box position="relative" sx={{ mt: 3, mb: 2 }}>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          data-test="submit-login"
-          disabled={loading}
-        >
-          Update
-        </Button>
-        {loading && (
-          <CircularProgress
-            size={24}
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              mt: -1.5,
-              ml: -1.5,
-            }}
-          />
-        )}
-      </Box>
+      <LoadingButton
+        type="submit"
+        dataTestId="submit-company-details"
+        loading={loading}
+        sx={{ mt: 2, mb: 2 }}
+      >
+        Update
+      </LoadingButton>
     </Box>
   );
 }

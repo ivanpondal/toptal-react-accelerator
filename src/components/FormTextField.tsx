@@ -17,7 +17,9 @@ export default function FormTextField<TFieldValues>(
       fullWidth
       error={!!errorField}
       helperText={
-        <span data-test={`${dataTestId}-error`}>{errorField?.message}</span>
+        errorField && (
+          <span data-test={`${dataTestId}-error`}>{errorField?.message}</span>
+        )
       }
       inputProps={{ "data-test": dataTestId }}
       {...register(id)}

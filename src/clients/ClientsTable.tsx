@@ -62,21 +62,22 @@ export default function ClientsTable(props: {
 }) {
   const { clients, loading, onRowClick } = props;
   return (
-    <DataGrid
-      data-test="clients-table"
-      columns={columns}
-      rows={clients}
-      hideFooter
-      disableColumnMenu
-      autoHeight
-      loading={loading}
-      onRowClick={(params) => onRowClick(params.id)}
-      components={{
-        LoadingOverlay: DataTestLoadingOverlay,
-        Row: DataTestRow("client"),
-        Cell: DataTestCell("client"),
-        NoRowsOverlay: DataTestNoRowsOverlay,
-      }}
-    />
+    <div data-test="clients-table">
+      <DataGrid
+        columns={columns}
+        rows={clients}
+        hideFooter
+        disableColumnMenu
+        autoHeight
+        loading={loading}
+        onRowClick={(params) => onRowClick(params.id)}
+        components={{
+          LoadingOverlay: DataTestLoadingOverlay,
+          Row: DataTestRow("client"),
+          Cell: DataTestCell("client"),
+          NoRowsOverlay: DataTestNoRowsOverlay,
+        }}
+      />
+    </div>
   );
 }
