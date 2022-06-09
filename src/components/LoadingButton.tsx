@@ -15,6 +15,7 @@ export default function LoadingButton(
         variant="contained"
         disabled={loading}
         data-test={dataTestId}
+        size="large"
         {...restProps}
       >
         {children}
