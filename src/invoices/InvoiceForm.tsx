@@ -18,7 +18,6 @@ import FormTextField from "../components/FormTextField";
 import LoadingButton from "../components/LoadingButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { debug } from "console";
 
 const schema = yup.object({
   invoiceDate: yup.date().required(),
@@ -78,6 +77,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
     formState: { errors },
     reset,
     control,
+    watch,
   } = useForm<InvoiceDetailsFormData>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -89,6 +89,13 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
     control,
     name: "items",
   });
+
+  const total = watch("items")
+    .map((item) => item.value)
+    .map((value) => Number(value))
+    .filter((value) => !Number.isNaN(value))
+    .filter((value) => value > 0)
+    .reduce((prev, curr) => prev + curr, 0);
 
   return (
     <Box
@@ -246,12 +253,14 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
             dataTestId="invoice-item-value"
             register={register}
             disabled={loading}
+            type="number"
             required
           />
         </Grid>
       </Grid>
 
       {fields.slice(1).map((field, index) => {
+        // need to offset index since first item is fixed
         const idx = index + 1;
         return (
           <div key={field.id}>
@@ -284,12 +293,10 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
                     dataTestId={`invoice-item-${idx}-value`}
                     register={register}
                     disabled={loading}
+                    type="number"
                     required
                   />
-                  <IconButton
-                    onClick={() => remove(index)}
-                    sx={{ minWidth: 56 }}
-                  >
+                  <IconButton onClick={() => remove(idx)} sx={{ minWidth: 56 }}>
                     <ClearIcon />
                   </IconButton>
                 </Stack>
@@ -309,9 +316,15 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
         Add
       </Button>
 
-      <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-        Total: $ 0
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "baseline" }}>
+        <Typography variant="h5" sx={{ flexGrow: 1 }}>
+          Total
+        </Typography>
+
+        <Typography variant="h5">$ &nbsp;</Typography>
+
+        <Typography variant="h4">{total.toFixed(2)}</Typography>
+      </Box>
 
       <LoadingButton
         sx={{ mt: 2, mb: 2 }}
