@@ -35,7 +35,7 @@ const schema = yup.object({
       value: yup.number().moreThan(0).required(),
     })
   ),
-  invoiceClientId: yup.string().required(),
+  invoiceClientId: yup.number().required(),
 });
 
 export type InvoiceDetailsFormData = {
@@ -47,7 +47,7 @@ export type InvoiceDetailsFormData = {
     description: string;
     value: number;
   }>;
-  invoiceClientId: string;
+  invoiceClientId: number | null;
 };
 
 export type InvoiceDetailsFormProps = {
@@ -59,12 +59,16 @@ export type InvoiceDetailsFormProps = {
 
 const DUMMY_CLIENTS = [
   {
-    id: 1,
+    id: 0,
     label: "Apple",
   },
   {
-    id: 2,
+    id: 1,
     label: "Microsoft",
+  },
+  {
+    id: 2,
+    label: "Amazon",
   },
 ];
 
@@ -205,26 +209,35 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
         disabled={loading}
       />
 
-      <Autocomplete
-        disablePortal
-        sx={{ mt: 2, mb: 1 }}
-        options={DUMMY_CLIENTS}
-        renderInput={(params) => {
-          const { id, disabled, ...restParams } = params;
-          return (
-            <FormTextField
-              id="invoiceClientId"
-              sx={{ m: 0 }}
-              label="Company"
-              errorField={errors.invoiceClientId}
-              dataTestId="invoice-company-id"
-              register={register}
-              disabled={loading}
-              required
-              {...restParams}
-            />
-          );
-        }}
+      <Controller
+        name="invoiceClientId"
+        control={control}
+        defaultValue={null}
+        render={({ field }) => (
+          <Autocomplete
+            {...field}
+            disablePortal
+            sx={{ mt: 2, mb: 1 }}
+            options={DUMMY_CLIENTS}
+            onChange={(_, data) => field.onChange(data?.id)}
+            value={field.value !== null ? DUMMY_CLIENTS[field.value] : null}
+            renderInput={(params) => (
+              <TextField
+                margin="normal"
+                sx={{ m: 0 }}
+                {...params}
+                helperText={
+                  errors.invoiceClientId && (
+                    <span data-test="invoice">
+                      {errors.invoiceClientId?.message}
+                    </span>
+                  )
+                }
+                error={!!errors.invoiceClientId}
+              />
+            )}
+          />
+        )}
       />
 
       <Typography variant="h6" sx={{ mt: 2 }}>
