@@ -131,6 +131,11 @@ export type ClientData = {
   companyDetails: CompanyDetails;
 };
 
+export type ClientName = {
+  id: string;
+  companyName: string;
+};
+
 export const ClientAPI = {
   getAll: async function (params: {
     sort?: ClientListingSorting;
@@ -157,6 +162,11 @@ export const ClientAPI = {
   getById: async function (id: string) {
     return await executeRequest(() =>
       invoiceBackendAPI.get<{ client: ClientData }>(`/clients/${id}`)
+    );
+  },
+  getAllNames: async function () {
+    return await executeRequest(() =>
+      invoiceBackendAPI.get<{ clients: Array<ClientName> }>("/clients/names")
     );
   },
 };

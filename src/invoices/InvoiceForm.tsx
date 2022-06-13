@@ -29,13 +29,13 @@ const schema = yup.object({
     .notRequired()
     .min(3)
     .transform((value) => (!!value ? value : null)),
+  invoiceClientId: yup.string().required(),
   items: yup.array().of(
     yup.object().shape({
       description: yup.string().min(3).required(),
       value: yup.number().moreThan(0).required(),
     })
   ),
-  invoiceClientId: yup.number().required(),
 });
 
 export type InvoiceDetailsFormData = {
@@ -47,33 +47,25 @@ export type InvoiceDetailsFormData = {
     description: string;
     value: number;
   }>;
-  invoiceClientId: number | null;
+  invoiceClientId: string | null;
 };
 
 export type InvoiceDetailsFormProps = {
   onSubmitRequest: (values: InvoiceDetailsFormData) => unknown;
+  clientNames: { [key: string]: { id: string; label: string } };
   loading?: boolean;
   errorMessage?: string;
   successMessage?: string;
 };
 
-const DUMMY_CLIENTS = [
-  {
-    id: 0,
-    label: "Apple",
-  },
-  {
-    id: 1,
-    label: "Microsoft",
-  },
-  {
-    id: 2,
-    label: "Amazon",
-  },
-];
-
 export default function InvoiceForm(props: InvoiceDetailsFormProps) {
-  const { loading, errorMessage, successMessage, onSubmitRequest } = props;
+  const {
+    clientNames,
+    loading,
+    errorMessage,
+    successMessage,
+    onSubmitRequest,
+  } = props;
 
   const {
     register,
@@ -218,9 +210,9 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
             {...field}
             disablePortal
             sx={{ mt: 2, mb: 1 }}
-            options={DUMMY_CLIENTS}
+            options={Object.values(clientNames)}
             onChange={(_, data) => field.onChange(data?.id)}
-            value={field.value !== null ? DUMMY_CLIENTS[field.value] : null}
+            value={field.value !== null ? clientNames[field.value] : null}
             renderInput={(params) => (
               <TextField
                 margin="normal"
