@@ -21,10 +21,12 @@ export const useAsync = <T, I, E = string>(
         .then((response: any) => {
           setValue(response);
           setStatus("success");
+          return true;
         })
         .catch((error: any) => {
           setError(error);
           setStatus("error");
+          return false;
         });
     },
     [asyncFunction]

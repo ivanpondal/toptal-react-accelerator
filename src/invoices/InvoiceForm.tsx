@@ -36,6 +36,7 @@ const schema = yup.object({
       value: yup.number().moreThan(0).required(),
     })
   ),
+  total: yup.number().moreThan(0).required(),
 });
 
 export type InvoiceDetailsFormData = {
@@ -43,15 +44,16 @@ export type InvoiceDetailsFormData = {
   invoiceDueDate: Date;
   invoiceNumber: string;
   invoiceProjectCode?: string;
+  invoiceClientId: string;
   items: Array<{
     description: string;
     value: number;
   }>;
-  invoiceClientId: string | null;
+  total: number;
 };
 
 export type InvoiceDetailsFormProps = {
-  onSubmitRequest: (values: InvoiceDetailsFormData) => unknown;
+  onSubmitRequest: (values: InvoiceDetailsFormData) => Promise<boolean>;
   clientNames: { [key: string]: { id: string; label: string } };
   loading?: boolean;
   errorMessage?: string;
@@ -74,10 +76,13 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
     reset,
     control,
     watch,
+    setValue,
   } = useForm<InvoiceDetailsFormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      items: [],
+      invoiceNumber: "",
+      invoiceProjectCode: "",
+      items: [{ description: "", value: 0 }],
     },
   });
 
@@ -93,12 +98,16 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
     .filter((value) => value > 0)
     .reduce((prev, curr) => prev + curr, 0);
 
+  setValue("total", total);
+
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit((values: InvoiceDetailsFormData) => {
-        onSubmitRequest(values);
-        reset();
+      onSubmit={handleSubmit(async (data) => {
+        const success = await onSubmitRequest(data);
+        if (success) {
+          reset();
+        }
       })}
       noValidate
       sx={{ mt: 1 }}
@@ -142,6 +151,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
                       sx={{ m: 0 }}
                       {...params}
                       error={!!errors.invoiceDate}
+                      disabled={loading}
                     />
                   );
                 }}
@@ -174,6 +184,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
                       sx={{ m: 0 }}
                       {...params}
                       error={!!errors.invoiceDueDate}
+                      disabled={loading}
                     />
                   );
                 }}
@@ -204,7 +215,6 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
       <Controller
         name="invoiceClientId"
         control={control}
-        defaultValue={null}
         render={({ field }) => (
           <Autocomplete
             {...field}
@@ -212,22 +222,30 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
             sx={{ mt: 2, mb: 1 }}
             options={Object.values(clientNames)}
             onChange={(_, data) => field.onChange(data?.id)}
-            value={field.value !== null ? clientNames[field.value] : null}
-            renderInput={(params) => (
-              <TextField
-                margin="normal"
-                sx={{ m: 0 }}
-                {...params}
-                helperText={
-                  errors.invoiceClientId && (
-                    <span data-test="invoice">
-                      {errors.invoiceClientId?.message}
-                    </span>
-                  )
-                }
-                error={!!errors.invoiceClientId}
-              />
-            )}
+            value={field.value ? clientNames[field.value] : null}
+            renderInput={(params) => {
+              let { inputProps, ...restParams } = params;
+              return (
+                <TextField
+                  margin="normal"
+                  sx={{ m: 0 }}
+                  {...restParams}
+                  inputProps={{
+                    "data-test": "invoice-company-id",
+                    ...inputProps,
+                  }}
+                  helperText={
+                    errors.invoiceClientId && (
+                      <span data-test="invoice-company-id-error">
+                        {errors.invoiceClientId?.message}
+                      </span>
+                    )
+                  }
+                  error={!!errors.invoiceClientId}
+                  disabled={loading}
+                />
+              );
+            }}
           />
         )}
       />
@@ -236,7 +254,12 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
         Invoice items
       </Typography>
 
-      <Grid container spacing={3} sx={{ mt: 0, mb: 1 }}>
+      <Grid
+        container
+        spacing={3}
+        sx={{ mt: 0, mb: 1 }}
+        data-test-id="invoice-item-1"
+      >
         <Grid item xs={12} sm={6}>
           <FormTextField
             sx={{ m: 0 }}
@@ -274,7 +297,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
               container
               spacing={3}
               sx={{ mt: 0, mb: 1 }}
-              data-test-id={`invoice-item-${idx}`}
+              data-test-id={`invoice-item-${idx + 1}`}
             >
               <Grid item xs={12} sm={6}>
                 <FormTextField
@@ -282,7 +305,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
                   id={`items.${idx}.description`}
                   label="Description"
                   errorField={errors.items?.at(idx)?.description}
-                  dataTestId={`invoice-item-${idx}-description`}
+                  dataTestId={`invoice-item-description`}
                   register={register}
                   disabled={loading}
                   required
@@ -295,13 +318,17 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
                     id={`items.${idx}.value`}
                     label="Value"
                     errorField={errors.items?.at(idx)?.value}
-                    dataTestId={`invoice-item-${idx}-value`}
+                    dataTestId={`invoice-item-value`}
                     register={register}
                     disabled={loading}
                     type="number"
                     required
                   />
-                  <IconButton onClick={() => remove(idx)} sx={{ minWidth: 56 }}>
+                  <IconButton
+                    onClick={() => remove(idx)}
+                    sx={{ minWidth: 56 }}
+                    disabled={loading}
+                  >
                     <ClearIcon />
                   </IconButton>
                 </Stack>
@@ -317,6 +344,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
         size="large"
         sx={{ mt: 2, mb: 1 }}
         onClick={() => append({ description: "", value: undefined })}
+        disabled={loading}
       >
         Add
       </Button>

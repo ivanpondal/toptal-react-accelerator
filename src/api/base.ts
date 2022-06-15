@@ -183,8 +183,8 @@ export type InvoiceData = {
   date: number;
   dueDate: number;
   value: number;
-  projectCode: string;
-  meta?: Record<string, any>;
+  projectCode?: string;
+  meta?: { items: Array<{ description: string; value: number }> };
 };
 
 type InvoiceWithClientDetails = {
@@ -203,6 +203,11 @@ export const InvoiceAPI = {
       invoiceBackendAPI.get<{ invoices: InvoiceWithClientDetails[] }>(
         `/invoices?params=${encodedParams}`
       )
+    );
+  },
+  create: async function (params: Omit<InvoiceData, "id" | "user_id">) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.post<{ invoice: InvoiceData }>("/invoices", params)
     );
   },
 };
