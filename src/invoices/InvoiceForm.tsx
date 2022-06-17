@@ -213,7 +213,6 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
         label="Number"
         errorField={errors.invoiceNumber}
         dataTestId="invoice-number"
-        register={register}
         disabled={loading}
         required
       />
@@ -224,7 +223,6 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
         label="Project Code"
         errorField={errors.invoiceProjectCode}
         dataTestId="invoice-project-code"
-        register={register}
         disabled={loading}
       />
 
@@ -284,7 +282,6 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
             label="Description"
             errorField={errors.items?.at(0)?.description}
             dataTestId="invoice-item-description"
-            register={register}
             disabled={loading}
             required
           />
@@ -324,7 +321,6 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
                   label="Description"
                   errorField={errors.items?.at(idx)?.description}
                   dataTestId={`invoice-item-description`}
-                  register={register}
                   disabled={loading}
                   required
                 />
