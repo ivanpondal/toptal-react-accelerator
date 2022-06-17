@@ -215,4 +215,9 @@ export const InvoiceAPI = {
       invoiceBackendAPI.post<{ invoice: InvoiceData }>("/invoices", params)
     );
   },
+  update: async function (params: Omit<InvoiceData, "user_id">) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.put<{ invoice: InvoiceData }>("/invoices", params)
+    );
+  },
 };

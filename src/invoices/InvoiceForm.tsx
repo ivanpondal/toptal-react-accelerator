@@ -58,6 +58,7 @@ export type InvoiceDetailsFormData = {
 export type InvoiceDetailsFormProps = {
   onSubmitRequest: (values: InvoiceDetailsFormData) => Promise<boolean>;
   clientNames: { [key: string]: { id: string; label: string } };
+  isUpdateForm?: boolean;
   loading?: boolean;
   errorMessage?: string;
   successMessage?: string;
@@ -72,6 +73,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
     successMessage,
     onSubmitRequest,
     invoice,
+    isUpdateForm = false,
   } = props;
 
   const {
@@ -116,7 +118,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
       component="form"
       onSubmit={handleSubmit(async (data) => {
         const success = await onSubmitRequest(data);
-        if (success) {
+        if (success && !isUpdateForm) {
           reset();
         }
       })}
@@ -381,7 +383,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
         dataTestId="submit-client"
         loading={loading}
       >
-        Update
+        {isUpdateForm ? "Update" : "Register"}
       </LoadingButton>
     </Box>
   );

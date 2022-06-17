@@ -66,7 +66,8 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
     status: updateStatus,
   } = useAsync(async (params: InvoiceDetailsFormData) => {
     setSuccessfulUpdateMessage(null);
-    return await InvoiceAPI.create({
+    return await InvoiceAPI.update({
+      id: invoiceId ? invoiceId : '',
       invoice_number: params.invoiceNumber,
       client_id: params.invoiceClientId,
       date: params.invoiceDate.valueOf(),
@@ -74,7 +75,7 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
       value: params.total,
       projectCode: params.invoiceProjectCode,
       meta: { items: params.items },
-    }).then(() => setSuccessfulUpdateMessage("Invoice created successfully!"));
+    }).then(() => setSuccessfulUpdateMessage("Invoice updated successfully!"));
   });
 
   let clientNamesForm = clientNames ? clientNames : {};
@@ -100,6 +101,7 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
       loading={loading}
       errorMessage={errorMessage}
       successMessage={successMessage}
+      isUpdateForm
     />
   );
 }
