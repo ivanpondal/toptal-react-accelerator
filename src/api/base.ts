@@ -205,6 +205,11 @@ export const InvoiceAPI = {
       )
     );
   },
+  getById: async function (id: string) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.get<{ invoice: InvoiceData }>(`/invoices/${id}`)
+    );
+  },
   create: async function (params: Omit<InvoiceData, "id" | "user_id">) {
     return await executeRequest(() =>
       invoiceBackendAPI.post<{ invoice: InvoiceData }>("/invoices", params)

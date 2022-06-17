@@ -14,10 +14,13 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import * as yup from "yup";
-import FormTextField from "../components/FormTextField";
+import FormTextField, {
+  ControlledFormTextField,
+} from "../components/FormTextField";
 import LoadingButton from "../components/LoadingButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect } from "react";
 
 const schema = yup.object({
   invoiceDate: yup.date().required(),
@@ -58,6 +61,7 @@ export type InvoiceDetailsFormProps = {
   loading?: boolean;
   errorMessage?: string;
   successMessage?: string;
+  invoice?: InvoiceDetailsFormData;
 };
 
 export default function InvoiceForm(props: InvoiceDetailsFormProps) {
@@ -67,6 +71,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
     errorMessage,
     successMessage,
     onSubmitRequest,
+    invoice,
   } = props;
 
   const {
@@ -99,6 +104,12 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
     .reduce((prev, curr) => prev + curr, 0);
 
   setValue("total", total);
+
+  useEffect(() => {
+    if (invoice) {
+      reset(invoice);
+    }
+  }, [invoice]);
 
   return (
     <Box
@@ -193,8 +204,10 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
           />
         </Stack>
       </LocalizationProvider>
-      <FormTextField
+
+      <ControlledFormTextField
         id="invoiceNumber"
+        control={control}
         label="Number"
         errorField={errors.invoiceNumber}
         dataTestId="invoice-number"
@@ -203,8 +216,9 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
         required
       />
 
-      <FormTextField
+      <ControlledFormTextField
         id="invoiceProjectCode"
+        control={control}
         label="Project Code"
         errorField={errors.invoiceProjectCode}
         dataTestId="invoice-project-code"
@@ -261,9 +275,10 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
         data-test-id="invoice-item-1"
       >
         <Grid item xs={12} sm={6}>
-          <FormTextField
+          <ControlledFormTextField
             sx={{ m: 0 }}
             id="items.0.description"
+            control={control}
             label="Description"
             errorField={errors.items?.at(0)?.description}
             dataTestId="invoice-item-description"
@@ -300,9 +315,10 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
               data-test-id={`invoice-item-${idx + 1}`}
             >
               <Grid item xs={12} sm={6}>
-                <FormTextField
+                <ControlledFormTextField
                   sx={{ m: 0 }}
                   id={`items.${idx}.description`}
+                  control={control}
                   label="Description"
                   errorField={errors.items?.at(idx)?.description}
                   dataTestId={`invoice-item-description`}
