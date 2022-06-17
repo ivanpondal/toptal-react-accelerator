@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { encode } from "punycode";
 
 export const invoiceBackendAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -65,6 +64,7 @@ export const UserAPI = {
             handleTokenExpired();
           }
         }
+        return Promise.reject(error);
       }
     );
   },

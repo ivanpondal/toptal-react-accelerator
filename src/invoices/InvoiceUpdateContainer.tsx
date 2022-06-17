@@ -2,6 +2,7 @@ import { ClientAPI, InvoiceAPI } from "../api/base";
 import InvoiceForm, { InvoiceDetailsFormData } from "./InvoiceForm";
 import { useAsync } from "../hooks/useAsync";
 import { useEffect, useState } from "react";
+import { Typography } from "@mui/material";
 
 export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
   const { invoiceId } = props;
@@ -9,6 +10,7 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
   const {
     execute: loadInvoice,
     value: invoice,
+    error: invoiceLoadingError,
     status: invoiceLoadingStatus,
   } = useAsync(
     async (params: { id: string }): Promise<InvoiceDetailsFormData> => {
@@ -67,7 +69,7 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
   } = useAsync(async (params: InvoiceDetailsFormData) => {
     setSuccessfulUpdateMessage(null);
     return await InvoiceAPI.update({
-      id: invoiceId ? invoiceId : '',
+      id: invoiceId ? invoiceId : "",
       invoice_number: params.invoiceNumber,
       client_id: params.invoiceClientId,
       date: params.invoiceDate.valueOf(),
@@ -93,7 +95,14 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
   const loading =
     invoiceLoadingStatus === "pending" && updateStatus === "pending";
 
-  return (
+  let invoiceNotFoundMessage;
+  if (invoiceLoadingError === "Invoice not found") {
+    invoiceNotFoundMessage = "Invoice not found :(";
+  }
+
+  return invoiceNotFoundMessage ? (
+    <Typography>{invoiceNotFoundMessage}</Typography>
+  ) : (
     <InvoiceForm
       invoice={invoiceForm}
       onSubmitRequest={execute}
