@@ -63,7 +63,7 @@ export const InvoicesTable = (props: {
     number: string;
     company: string;
     date: number;
-    project: string;
+    project?: string;
     price: number;
   }>;
   loading: boolean;
