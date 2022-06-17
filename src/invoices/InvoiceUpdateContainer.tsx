@@ -96,21 +96,29 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
     invoiceLoadingStatus === "pending" && updateStatus === "pending";
 
   let invoiceNotFoundMessage;
-  if (invoiceLoadingError === "Invoice not found") {
-    invoiceNotFoundMessage = "Invoice not found :(";
+  if (
+    invoiceLoadingStatus === "error" &&
+    invoiceLoadingError === "Invoice not found"
+  ) {
+    invoiceNotFoundMessage = "Invoice was not found :(";
   }
 
   return invoiceNotFoundMessage ? (
-    <Typography>{invoiceNotFoundMessage}</Typography>
+    <Typography variant="h4" data-test="not-found-message">
+      {invoiceNotFoundMessage}
+    </Typography>
   ) : (
-    <InvoiceForm
-      invoice={invoiceForm}
-      onSubmitRequest={execute}
-      clientNames={clientNamesForm}
-      loading={loading}
-      errorMessage={errorMessage}
-      successMessage={successMessage}
-      isUpdateForm
-    />
+    <>
+      <Typography variant="h5">Update invoice</Typography>
+      <InvoiceForm
+        invoice={invoiceForm}
+        onSubmitRequest={execute}
+        clientNames={clientNamesForm}
+        loading={loading}
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+        isUpdateForm
+      />
+    </>
   );
 }

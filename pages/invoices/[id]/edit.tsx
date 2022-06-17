@@ -87,7 +87,6 @@ export default function EditInvoice() {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5">Update invoice</Typography>
             <InvoiceUpdateContainer invoiceId={state.invoiceId} />
           </Box>
         </Container>
