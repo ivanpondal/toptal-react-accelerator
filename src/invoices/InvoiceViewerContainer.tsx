@@ -5,8 +5,11 @@ import { useEffect } from "react";
 import { Typography } from "@mui/material";
 import InvoiceViewer from "./InvoiceViewer";
 
-export default function InvoiceViewerContainer(props: { invoiceId?: string }) {
-  const { invoiceId } = props;
+export default function InvoiceViewerContainer(props: {
+  invoiceId?: string;
+  print: boolean;
+}) {
+  const { invoiceId, print } = props;
 
   const {
     execute: loadInvoice,
@@ -65,7 +68,6 @@ export default function InvoiceViewerContainer(props: { invoiceId?: string }) {
   if (invoiceLoadingStatus === "error") {
     errorMessage = "Oops! Something went wrong with the server";
   }
-  const loading = invoiceLoadingStatus === "pending";
 
   let invoiceNotFoundMessage;
   if (
@@ -75,6 +77,12 @@ export default function InvoiceViewerContainer(props: { invoiceId?: string }) {
     invoiceNotFoundMessage = "Invoice was not found :(";
   }
 
+  useEffect(() => {
+    if (print && invoice && clientNames) {
+      window.print();
+    }
+  }, [print, invoice, clientNames]);
+
   return invoiceNotFoundMessage ? (
     <Typography variant="h4" data-test="not-found-message">
       {invoiceNotFoundMessage}
@@ -83,7 +91,6 @@ export default function InvoiceViewerContainer(props: { invoiceId?: string }) {
     <InvoiceViewer
       invoice={invoiceForm}
       clientNames={clientNamesForm}
-      loading={loading}
       errorMessage={errorMessage}
     />
   );

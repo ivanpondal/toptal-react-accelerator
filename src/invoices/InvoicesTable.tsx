@@ -48,8 +48,13 @@ const columns: GridColDef[] = [
     sortable: false,
     renderCell: (params) => (
       <ContextMenu
+        dataTestId="invoice-actions"
         menuItems={[
-          { href: "", item: "Print invoice" },
+          {
+            href: `/invoices/${params.id}/view?print=true`,
+            item: "Print invoice",
+            dataTestId: "invoice-print",
+          },
           { href: `/invoices/${params.id}/edit`, item: "Edit invoice" },
         ]}
       />

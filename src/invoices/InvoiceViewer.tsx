@@ -1,4 +1,4 @@
-import { Alert, Box, Divider, Typography } from "@mui/material";
+import { Alert, Box, Divider, Typography, useTheme } from "@mui/material";
 
 export type InvoiceDetailsFormData = {
   invoiceDate: Date;
@@ -16,13 +16,13 @@ export type InvoiceDetailsFormData = {
 export type InvoiceViewerProps = {
   invoice?: InvoiceDetailsFormData;
   clientNames?: { [key: string]: { id: string; label: string } };
-  loading?: boolean;
   errorMessage?: string;
   successMessage?: string;
 };
 
 export default function InvoiceForm(props: InvoiceViewerProps) {
-  const { clientNames, loading, errorMessage, invoice } = props;
+  const theme = useTheme();
+  const { clientNames, errorMessage, invoice } = props;
 
   let clientName;
   if (clientNames && invoice?.invoiceClientId) {
@@ -37,14 +37,19 @@ export default function InvoiceForm(props: InvoiceViewerProps) {
     .reduce((prev, curr) => prev + curr, 0);
 
   return (
-    <Box sx={{ mt: 1 }}>
+    <Box sx={{ mt: 1 }} minWidth={theme.breakpoints.values.sm}>
       {errorMessage && (
         <Alert data-test="form-error" severity="error">
           {errorMessage}
         </Alert>
       )}
 
-      <Typography variant="h2" sx={{ mt: 2 }} data-test="invoice-number">
+      <Typography
+        variant="h2"
+        sx={{ mt: 2 }}
+        data-test="invoice-number"
+        className="invoiceHeader"
+      >
         Invoice # {invoice?.invoiceNumber}
       </Typography>
 
@@ -52,6 +57,7 @@ export default function InvoiceForm(props: InvoiceViewerProps) {
         variant="h5"
         sx={{ mt: 2, textAlign: "right" }}
         data-test="invoice-date"
+        className="invoiceHeader"
       >
         Date: {invoice?.invoiceDate.toLocaleDateString()}
       </Typography>
@@ -60,11 +66,16 @@ export default function InvoiceForm(props: InvoiceViewerProps) {
         variant="h5"
         sx={{ mt: 2, textAlign: "right" }}
         data-test="invoice-due-date"
+        className="invoiceHeader"
       >
         Due Date: {invoice?.invoiceDueDate.toLocaleDateString()}
       </Typography>
 
-      <Typography variant="h4" sx={{ mt: 2, textAlign: "right" }}>
+      <Typography
+        variant="h4"
+        sx={{ mt: 2, textAlign: "right" }}
+        className="invoiceHeader"
+      >
         Billed to {clientName}
       </Typography>
 
@@ -73,6 +84,7 @@ export default function InvoiceForm(props: InvoiceViewerProps) {
           variant="h6"
           sx={{ mt: 2, textAlign: "right" }}
           data-test="invoice-project-code"
+          className="invoiceHeader"
         >
           "{invoice?.invoiceProjectCode}"
         </Typography>
@@ -127,6 +139,14 @@ export default function InvoiceForm(props: InvoiceViewerProps) {
           {total}
         </Typography>
       </Box>
+
+      <style jsx global>{`
+        @media print {
+          .invoiceHeader {
+            font-size: 1rem;
+          }
+        }
+      `}</style>
     </Box>
   );
 }

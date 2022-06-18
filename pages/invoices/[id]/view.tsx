@@ -1,20 +1,27 @@
-import { Container, Box, Typography } from "@mui/material";
+import { Container, Box, useMediaQuery } from "@mui/material";
 import { AuthGuard } from "../../../src/auth/AuthGuard";
 import { CompanyDetailsGuard } from "../../../src/company/CompanyDetailsGuard";
-import InvoiceUpdateContainer from "../../../src/invoices/InvoiceUpdateContainer";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import parseQueryParam from "../../../src/integration/query-params";
 import InvoiceViewerContainer from "../../../src/invoices/InvoiceViewerContainer";
-export default function EditInvoice() {
+
+export default function ViewInvoice() {
   const router = useRouter();
   const [invoiceId, setInvoiceId] = useState<string | undefined>(undefined);
+  const [print, setPrint] = useState<boolean>(false);
 
   useEffect(() => {
     if (router.isReady && !invoiceId) {
       setInvoiceId(parseQueryParam(router.query.id));
     }
   }, [router.isReady, router.query.id, invoiceId]);
+
+  useEffect(() => {
+    if (router.isReady && !print) {
+      setPrint(parseQueryParam(router.query.print) === "true");
+    }
+  }, [router.isReady, router.query.print, print]);
 
   return (
     <AuthGuard>
@@ -28,7 +35,7 @@ export default function EditInvoice() {
               alignItems: "center",
             }}
           >
-            <InvoiceViewerContainer invoiceId={invoiceId} />
+            <InvoiceViewerContainer invoiceId={invoiceId} print={print} />
           </Box>
         </Container>
       </CompanyDetailsGuard>

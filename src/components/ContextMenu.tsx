@@ -5,9 +5,10 @@ import { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 
 export const ContextMenu = (props: {
-  menuItems: Array<{ href: string; item: string }>;
+  menuItems: Array<{ href: string; item: string; dataTestId?: string }>;
+  dataTestId?: string;
 }) => {
-  const { menuItems } = props;
+  const { menuItems, dataTestId } = props;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -18,7 +19,7 @@ export const ContextMenu = (props: {
   };
 
   return (
-    <>
+    <div data-test={dataTestId}>
       <IconButton onClick={handleClick}>
         <MenuIcon />
       </IconButton>
@@ -26,11 +27,13 @@ export const ContextMenu = (props: {
         {menuItems.map((menuItem) => {
           return (
             <Link key={menuItem.item} href={menuItem.href} passHref>
-              <MenuItem>{menuItem.item}</MenuItem>
+              <MenuItem data-test={menuItem.dataTestId}>
+                {menuItem.item}
+              </MenuItem>
             </Link>
           );
         })}
       </Menu>
-    </>
+    </div>
   );
 };
