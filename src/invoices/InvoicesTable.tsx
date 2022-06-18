@@ -5,7 +5,7 @@ import {
   DataTestRow,
   DataTestCell,
   DataTestNoRowsOverlay,
-} from "../components/data-test-grid-components";
+} from "../components/data-test-grid";
 
 const columns: GridColDef[] = [
   {

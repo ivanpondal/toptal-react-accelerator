@@ -4,6 +4,7 @@ import { CompanyDetailsGuard } from "../../../src/company/CompanyDetailsGuard";
 import InvoiceUpdateContainer from "../../../src/invoices/InvoiceUpdateContainer";
 import { useRouter } from "next/router";
 import { useEffect, useReducer } from "react";
+import parseQueryParam from "../../../src/integration/query-params";
 
 // this is overkill, I wanted to play around with state management
 type InvoiceRouterStateAction = {
@@ -16,10 +17,6 @@ type InvoiceRouterState = {
   transition: (action: InvoiceRouterStateAction) => InvoiceRouterState;
   invoiceId?: string;
   onRouterChange: (router: any) => InvoiceRouterState;
-};
-
-const parseQueryParam = (queryParam: string | string[] | undefined) => {
-  return Array.isArray(queryParam) ? queryParam[0] : queryParam;
 };
 
 const reducer = (

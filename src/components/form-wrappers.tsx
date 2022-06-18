@@ -37,9 +37,9 @@ export function ControlledFormTextField<TFieldValues>(
               )
             }
             inputProps={{ "data-test": dataTestId }}
-            ref={ref}
-            {...restField}
             {...restProps}
+            {...restField}
+            ref={ref}
           />
         );
       }}

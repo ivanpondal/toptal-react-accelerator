@@ -25,7 +25,7 @@ export const ContextMenu = (props: {
       <Menu open={open} anchorEl={anchorEl} onClose={handleClose}>
         {menuItems.map((menuItem) => {
           return (
-            <Link href={menuItem.href} passHref>
+            <Link key={menuItem.item} href={menuItem.href} passHref>
               <MenuItem>{menuItem.item}</MenuItem>
             </Link>
           );

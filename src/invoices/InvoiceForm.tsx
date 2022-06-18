@@ -16,7 +16,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import * as yup from "yup";
 import FormTextField, {
   ControlledFormTextField,
-} from "../components/FormTextField";
+} from "../components/form-wrappers";
 import LoadingButton from "../components/LoadingButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import { yupResolver } from "@hookform/resolvers/yup";

@@ -26,7 +26,7 @@ export const InvoicesTableContainer = () => {
             company: invoiceWithDetails.client.companyDetails.name,
             date: invoiceWithDetails.invoice.date,
             project: invoiceWithDetails.invoice.projectCode,
-            price: invoiceWithDetails.invoice.value
+            price: invoiceWithDetails.invoice.value,
           };
         })
       )
@@ -66,7 +66,7 @@ export const InvoicesTableContainer = () => {
       <InvoicesTable
         invoices={invoices}
         loading={status === "pending"}
-        onRowClick={(rowId) => router.push(`/invoices/${rowId}`)}
+        onRowClick={(rowId) => router.push(`/invoices/${rowId}/view`)}
       />
     </>
   );

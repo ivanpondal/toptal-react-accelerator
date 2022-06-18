@@ -1,10 +1,11 @@
 import { ClientAPI, InvoiceAPI } from "../api/base";
-import InvoiceForm, { InvoiceDetailsFormData } from "./InvoiceForm";
+import { InvoiceDetailsFormData } from "./InvoiceForm";
 import { useAsync } from "../hooks/useAsync";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Typography } from "@mui/material";
+import InvoiceViewer from "./InvoiceViewer";
 
-export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
+export default function InvoiceViewerContainer(props: { invoiceId?: string }) {
   const { invoiceId } = props;
 
   const {
@@ -57,43 +58,14 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
     loadClientNames({});
   }, []);
 
-  const [successfulUpdateMessage, setSuccessfulUpdateMessage] = useState<
-    string | null
-  >(null);
-
-  const {
-    execute,
-    value,
-    error,
-    status: updateStatus,
-  } = useAsync(async (params: InvoiceDetailsFormData) => {
-    setSuccessfulUpdateMessage(null);
-    return await InvoiceAPI.update({
-      id: invoiceId ? invoiceId : "",
-      invoice_number: params.invoiceNumber,
-      client_id: params.invoiceClientId,
-      date: params.invoiceDate.valueOf(),
-      dueDate: params.invoiceDueDate.valueOf(),
-      value: params.total,
-      projectCode: params.invoiceProjectCode,
-      meta: { items: params.items },
-    }).then(() => setSuccessfulUpdateMessage("Invoice updated successfully!"));
-  });
-
   let clientNamesForm = clientNames ? clientNames : {};
   let invoiceForm = invoice ? invoice : undefined;
 
   let errorMessage;
-  if (error) {
+  if (invoiceLoadingStatus === "error") {
     errorMessage = "Oops! Something went wrong with the server";
   }
-
-  let successMessage = successfulUpdateMessage
-    ? successfulUpdateMessage
-    : undefined;
-
-  const loading =
-    invoiceLoadingStatus === "pending" && updateStatus === "pending";
+  const loading = invoiceLoadingStatus === "pending";
 
   let invoiceNotFoundMessage;
   if (
@@ -108,17 +80,11 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
       {invoiceNotFoundMessage}
     </Typography>
   ) : (
-    <>
-      <Typography variant="h5">Update invoice</Typography>
-      <InvoiceForm
-        invoice={invoiceForm}
-        onSubmitRequest={execute}
-        clientNames={clientNamesForm}
-        loading={loading}
-        errorMessage={errorMessage}
-        successMessage={successMessage}
-        isUpdateForm
-      />
-    </>
+    <InvoiceViewer
+      invoice={invoiceForm}
+      clientNames={clientNamesForm}
+      loading={loading}
+      errorMessage={errorMessage}
+    />
   );
 }
