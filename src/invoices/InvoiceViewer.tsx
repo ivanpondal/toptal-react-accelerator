@@ -1,4 +1,4 @@
-import { Alert, Box, Divider, Stack, Typography } from "@mui/material";
+import { Alert, Box, Divider, Typography } from "@mui/material";
 
 export type InvoiceDetailsFormData = {
   invoiceDate: Date;
@@ -44,15 +44,23 @@ export default function InvoiceForm(props: InvoiceViewerProps) {
         </Alert>
       )}
 
-      <Typography variant="h2" sx={{ mt: 2 }}>
+      <Typography variant="h2" sx={{ mt: 2 }} data-test="invoice-number">
         Invoice # {invoice?.invoiceNumber}
       </Typography>
 
-      <Typography variant="h5" sx={{ mt: 2, textAlign: "right" }}>
+      <Typography
+        variant="h5"
+        sx={{ mt: 2, textAlign: "right" }}
+        data-test="invoice-date"
+      >
         Date: {invoice?.invoiceDate.toLocaleDateString()}
       </Typography>
 
-      <Typography variant="h5" sx={{ mt: 2, textAlign: "right" }}>
+      <Typography
+        variant="h5"
+        sx={{ mt: 2, textAlign: "right" }}
+        data-test="invoice-due-date"
+      >
         Due Date: {invoice?.invoiceDueDate.toLocaleDateString()}
       </Typography>
 
@@ -61,7 +69,11 @@ export default function InvoiceForm(props: InvoiceViewerProps) {
       </Typography>
 
       {invoice?.invoiceProjectCode ? (
-        <Typography variant="h6" sx={{ mt: 2, textAlign: "right" }}>
+        <Typography
+          variant="h6"
+          sx={{ mt: 2, textAlign: "right" }}
+          data-test="invoice-project-code"
+        >
           "{invoice?.invoiceProjectCode}"
         </Typography>
       ) : null}
@@ -81,19 +93,27 @@ export default function InvoiceForm(props: InvoiceViewerProps) {
         <Typography variant="button">Value</Typography>
       </Box>
 
-      {invoice?.items.map((item) => (
-        <>
+      {invoice?.items.map((item, index) => (
+        <div key={index} data-test={`invoice-item-${index + 1}`}>
           <Divider sx={{ mt: 3 }} />
           <Box sx={{ display: "flex", alignItems: "baseline" }}>
-            <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
+            <Typography
+              variant="subtitle1"
+              sx={{ flexGrow: 1 }}
+              data-test="invoice-item-description"
+            >
               {item.description}
             </Typography>
 
-            <Typography variant="h6" sx={{ mt: 2 }}>
+            <Typography
+              variant="h6"
+              sx={{ mt: 2 }}
+              data-test="invoice-item-value"
+            >
               {item.value}
             </Typography>
           </Box>
-        </>
+        </div>
       ))}
 
       <Box sx={{ display: "flex", alignItems: "baseline", mt: 6 }}>
@@ -103,7 +123,9 @@ export default function InvoiceForm(props: InvoiceViewerProps) {
 
         <Typography variant="h5">$ &nbsp;</Typography>
 
-        <Typography variant="h4">{total}</Typography>
+        <Typography variant="h4" data-test="invoice-total">
+          {total}
+        </Typography>
       </Box>
     </Box>
   );
