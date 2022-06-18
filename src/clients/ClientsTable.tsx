@@ -42,7 +42,7 @@ const columns: GridColDef[] = [
       <ContextMenu
         menuItems={[
           { href: "", item: "Add new invoice" },
-          { href: `/clients/${params.id}/edit`, item: "Edit client" },
+          { href: `/clients/${params.id}`, item: "Edit client" },
         ]}
       />
     ),
