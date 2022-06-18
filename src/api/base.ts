@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { encode } from "punycode";
 
 export const invoiceBackendAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -65,6 +64,7 @@ export const UserAPI = {
             handleTokenExpired();
           }
         }
+        return Promise.reject(error);
       }
     );
   },
@@ -131,6 +131,11 @@ export type ClientData = {
   companyDetails: CompanyDetails;
 };
 
+export type ClientName = {
+  id: string;
+  companyName: string;
+};
+
 export const ClientAPI = {
   getAll: async function (params: {
     sort?: ClientListingSorting;
@@ -159,6 +164,11 @@ export const ClientAPI = {
       invoiceBackendAPI.get<{ client: ClientData }>(`/clients/${id}`)
     );
   },
+  getAllNames: async function () {
+    return await executeRequest(() =>
+      invoiceBackendAPI.get<{ clients: Array<ClientName> }>("/clients/names")
+    );
+  },
 };
 
 export type InvoiceListingSorting = {
@@ -173,8 +183,8 @@ export type InvoiceData = {
   date: number;
   dueDate: number;
   value: number;
-  projectCode: string;
-  meta?: Record<string, any>;
+  projectCode?: string;
+  meta?: { items: Array<{ description: string; value: number }> };
 };
 
 type InvoiceWithClientDetails = {
@@ -193,6 +203,21 @@ export const InvoiceAPI = {
       invoiceBackendAPI.get<{ invoices: InvoiceWithClientDetails[] }>(
         `/invoices?params=${encodedParams}`
       )
+    );
+  },
+  getById: async function (id: string) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.get<{ invoice: InvoiceData }>(`/invoices/${id}`)
+    );
+  },
+  create: async function (params: Omit<InvoiceData, "id" | "user_id">) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.post<{ invoice: InvoiceData }>("/invoices", params)
+    );
+  },
+  update: async function (params: Omit<InvoiceData, "user_id">) {
+    return await executeRequest(() =>
+      invoiceBackendAPI.put<{ invoice: InvoiceData }>("/invoices", params)
     );
   },
 };

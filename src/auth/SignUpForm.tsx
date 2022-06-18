@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
-import FormTextField from "../components/FormTextField";
+import FormTextField from "../components/form-wrappers";
 import LoadingButton from "../components/LoadingButton";
 
 const schema = yup.object({

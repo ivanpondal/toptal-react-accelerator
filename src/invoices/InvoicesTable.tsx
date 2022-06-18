@@ -5,7 +5,7 @@ import {
   DataTestRow,
   DataTestCell,
   DataTestNoRowsOverlay,
-} from "../components/data-test-grid-components";
+} from "../components/data-test-grid";
 
 const columns: GridColDef[] = [
   {
@@ -48,8 +48,13 @@ const columns: GridColDef[] = [
     sortable: false,
     renderCell: (params) => (
       <ContextMenu
+        dataTestId="invoice-actions"
         menuItems={[
-          { href: "", item: "Print invoice" },
+          {
+            href: `/invoices/${params.id}/view?print=true`,
+            item: "Print invoice",
+            dataTestId: "invoice-print",
+          },
           { href: `/invoices/${params.id}/edit`, item: "Edit invoice" },
         ]}
       />
@@ -63,7 +68,7 @@ export const InvoicesTable = (props: {
     number: string;
     company: string;
     date: number;
-    project: string;
+    project?: string;
     price: number;
   }>;
   loading: boolean;

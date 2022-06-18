@@ -1,22 +1,14 @@
 import { Container, Box, Typography } from "@mui/material";
-import { useRouter } from "next/router";
 import { AuthGuard } from "../../src/auth/AuthGuard";
-import ClientEditContainer from "../../src/clients/ClientEditContainer";
+import ClientCreationContainer from "../../src/clients/ClientCreationContainer";
 import { CompanyDetailsGuard } from "../../src/company/CompanyDetailsGuard";
+import InvoiceCreationContainer from "../../src/invoices/InvoiceCreationContainer";
 
-export default function EditClient() {
-  const router = useRouter();
-  const { id: clientId } = router.query;
-
-  if (!clientId || Array.isArray(clientId)) {
-    // loading
-    return null;
-  }
-
+export default function NewInvoice() {
   return (
     <AuthGuard>
       <CompanyDetailsGuard>
-        <Container component="main" maxWidth="xs">
+        <Container component="main" maxWidth="sm">
           <Box
             sx={{
               marginTop: 8,
@@ -25,10 +17,10 @@ export default function EditClient() {
               alignItems: "center",
             }}
           >
-            <Typography component="h1" variant="h5">
-              Edit client
+            <Typography variant="h5">
+              Create invoice
             </Typography>
-            <ClientEditContainer clientId={clientId} />
+            <InvoiceCreationContainer />
           </Box>
         </Container>
       </CompanyDetailsGuard>

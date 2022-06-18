@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Alert from "@mui/material/Alert";
 import LoadingButton from "../components/LoadingButton";
-import FormTextField from "../components/FormTextField";
+import FormTextField from "../components/form-wrappers";
 
 const schema = yup.object({
   companyName: yup.string().min(3).max(16).required(),
