@@ -1,13 +1,13 @@
-import { Box, Typography, Button, IconButton, Alert } from "@mui/material";
-import Link from "next/link";
-import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
+import { Alert, Box, IconButton, Typography } from "@mui/material";
 import { InvoicesTable } from "./InvoicesTable";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAsync } from "../hooks/useAsync";
 import { InvoiceAPI } from "../api/base";
+import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
+import Link from "next/link";
 
-export const InvoicesTableContainer = () => {
+export const InvoiceListContainer = () => {
   const router = useRouter();
 
   const {
@@ -44,30 +44,28 @@ export const InvoicesTableContainer = () => {
   }
 
   return (
-    <>
-      <Box sx={{ display: "flex", mb: 1 }}>
+    <div style={{ display: "block" }}>
+      {errorMessage && (
+        <Alert sx={{ mb: 1 }} severity="error" data-test="invoices-fetch-error">
+          {errorMessage}
+        </Alert>
+      )}
+
+      <Box sx={{ display: "flex", mt: 3, mb: 1 }}>
         <Typography variant="h5" sx={{ flexGrow: 1 }}>
-          Latest invoices
+          Invoices
         </Typography>
-        <Link href="/invoices" passHref>
-          <Button data-test="view-all-invoices">All Invoices</Button>
-        </Link>
         <Link href="/invoices/new" passHref>
           <IconButton data-test="add-invoice">
             <AddBoxIcon color="primary" />
           </IconButton>
         </Link>
       </Box>
-      {errorMessage && (
-        <Alert sx={{ mb: 1 }} severity="error" data-test="invoices-fetch-error">
-          {errorMessage}
-        </Alert>
-      )}
       <InvoicesTable
         invoices={invoices}
         loading={status === "pending"}
         onRowClick={(rowId) => router.push(`/invoices/${rowId}/view`)}
       />
-    </>
+    </div>
   );
 };

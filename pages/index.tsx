@@ -2,9 +2,9 @@ import { Button, Container, Grid } from "@mui/material";
 import type { NextPage } from "next";
 import { useAuthContext } from "../src/auth/AuthContext";
 import { AuthGuard } from "../src/auth/AuthGuard";
-import ClientsTableContainer from "../src/clients/ClientsTableContainer";
+import LatestClientsTableContainer from "../src/clients/LatestClientsTableContainer";
 import { CompanyDetailsGuard } from "../src/company/CompanyDetailsGuard";
-import { InvoicesTableContainer } from "../src/invoices/InvoicesTableContainer";
+import { LatestInvoicesTableContainer } from "../src/invoices/LatestInvoicesTableContainer";
 
 const Home: NextPage = () => {
   const { logout } = useAuthContext();
@@ -16,10 +16,10 @@ const Home: NextPage = () => {
         <Container component="main" maxWidth="lg">
           <Grid container spacing={2}>
             <Grid item md={6} xs={12}>
-              <ClientsTableContainer />
+              <LatestClientsTableContainer />
             </Grid>
             <Grid item md={6} xs={12}>
-              <InvoicesTableContainer />
+              <LatestInvoicesTableContainer />
             </Grid>
           </Grid>
         </Container>

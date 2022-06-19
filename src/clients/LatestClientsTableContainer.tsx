@@ -7,7 +7,7 @@ import { useAsync } from "../hooks/useAsync";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-export default function ClientsTableContainer() {
+export default function LatestClientsTableContainer() {
   const router = useRouter();
 
   const {
