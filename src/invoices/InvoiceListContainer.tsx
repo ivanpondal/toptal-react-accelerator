@@ -2,46 +2,68 @@ import { Alert, Box, IconButton, Typography } from "@mui/material";
 import { InvoicesTable } from "./InvoicesTable";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useAsync } from "../hooks/useAsync";
-import { InvoiceAPI } from "../api/base";
 import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
 import Link from "next/link";
+import { useInvoiceStore } from "./InvoiceStore";
 
-export const InvoiceListContainer = () => {
+const invoiceSortingFields = [
+  "total",
+  "dueDate",
+  "creationDate",
+  "companyName",
+] as const;
+type InvoiceSortingFieldTuple = typeof invoiceSortingFields;
+export type InvoiceSortingField = InvoiceSortingFieldTuple[number];
+
+export function isInvoiceSortingField(
+  value: string
+): value is InvoiceSortingField {
+  return invoiceSortingFields.includes(value as InvoiceSortingField);
+}
+
+const invoiceSortingOrders = ["asc", "desc"] as const;
+type InvoiceSortingOrderTuple = typeof invoiceSortingOrders;
+export type InvoiceSortingOrder = InvoiceSortingOrderTuple[number];
+
+export function isInvoiceSortingOrder(
+  value: string
+): value is InvoiceSortingOrder {
+  return invoiceSortingOrders.includes(value as InvoiceSortingOrder);
+}
+
+export type InvoiceSortingParams = {
+  field?: InvoiceSortingField;
+  order?: "asc" | "desc";
+};
+
+type FetchInvoiceParams = {
+  sort: InvoiceSortingParams;
+};
+
+export const InvoiceListContainer = (props: {
+  sorting?: InvoiceSortingParams;
+}) => {
+  const { sorting } = props;
+
+  const tableSortModel = sorting
+    ? [
+        {
+          field: sorting.field as string,
+          sort: sorting.order,
+        },
+      ]
+    : [];
+
   const router = useRouter();
 
-  const {
-    execute,
-    value: invoicesResponse,
-    error,
-    status,
-  } = useAsync((params: any) =>
-    InvoiceAPI.getAll(params)
-      .then((res) => res.invoices)
-      .then((res) =>
-        res.map((invoiceWithDetails) => {
-          return {
-            id: invoiceWithDetails.invoice.id,
-            number: invoiceWithDetails.invoice.invoice_number,
-            company: invoiceWithDetails.client.companyDetails.name,
-            date: invoiceWithDetails.invoice.date,
-            project: invoiceWithDetails.invoice.projectCode,
-            price: invoiceWithDetails.invoice.value,
-          };
-        })
-      )
+  const { invoices, fetchStatus, errorMessage } = useInvoiceStore(
+    (state) => state.invoiceList
   );
+  const fetchInvoiceList = useInvoiceStore((state) => state.fetchInvoiceList);
 
   useEffect(() => {
-    execute({ sort: { creation: "desc" }, limit: 10 });
-  }, []);
-
-  let invoices = invoicesResponse ? invoicesResponse : [];
-
-  let errorMessage;
-  if (error) {
-    errorMessage = "Oops! Something went wrong with the server";
-  }
+    fetchInvoiceList({ sort: { creation: "desc" }, limit: 10 });
+  }, [fetchInvoiceList]);
 
   return (
     <div style={{ display: "block" }}>
@@ -63,8 +85,21 @@ export const InvoiceListContainer = () => {
       </Box>
       <InvoicesTable
         invoices={invoices}
-        loading={status === "pending"}
+        loading={fetchStatus === "pending"}
         onRowClick={(rowId) => router.push(`/invoices/${rowId}/view`)}
+        sortable={true}
+        sortModel={tableSortModel}
+        onSortModelChange={(model) => {
+          if (model.length === 0) {
+            router.push("/invoices");
+          } else {
+            router.push(
+              `/invoices?sortBy=${
+                model[0].field
+              }&sortOrder=${model[0].sort?.toUpperCase()}`
+            );
+          }
+        }}
       />
     </div>
   );

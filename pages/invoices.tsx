@@ -4,52 +4,59 @@ import { useEffect, useState } from "react";
 import { AuthGuard } from "../src/auth/AuthGuard";
 import { CompanyDetailsGuard } from "../src/company/CompanyDetailsGuard";
 import parseQueryParam from "../src/integration/query-params";
-import { InvoiceListContainer } from "../src/invoices/InvoiceListContainer";
-
-const sortingFields = [
-  "total",
-  "dueDate",
-  "creationDate",
-  "companyName",
-] as const;
-type SortingFieldTuple = typeof sortingFields;
-type SortingField = SortingFieldTuple[number];
-
-type SortingParams = {
-  sortBy?: SortingField;
-  sortOrder?: "ASC" | "DESC";
-};
-
-function isSortingField(value: string): value is SortingField {
-  return sortingFields.includes(value as SortingField);
-}
+import {
+  InvoiceListContainer,
+  InvoiceSortingField,
+  InvoiceSortingOrder,
+  InvoiceSortingParams,
+  isInvoiceSortingField,
+  isInvoiceSortingOrder,
+} from "../src/invoices/InvoiceListContainer";
 
 export default function InvoiceList() {
   const router = useRouter();
-  const [sortingParams, setSortingParams] = useState<SortingParams>({});
+  const [sortingParams, setSortingParams] = useState<
+    InvoiceSortingParams | undefined
+  >(undefined);
 
   useEffect(() => {
     if (router.isReady) {
       if (router.query.sortBy) {
         const parsedSortBy = parseQueryParam(router.query.sortBy);
 
-        if (parsedSortBy && isSortingField(parsedSortBy)) {
-          setSortingParams((sortingParams) => {
-            return {
-              ...sortingParams,
-              sortBy: parsedSortBy,
-            };
+        let sortingField: InvoiceSortingField | undefined;
+        if (parsedSortBy && isInvoiceSortingField(parsedSortBy)) {
+          sortingField = parsedSortBy;
+        }
+
+        const parsedSortOrder = parseQueryParam(
+          router.query.sortOrder
+        )?.toLowerCase();
+
+        let sortingOrder: InvoiceSortingOrder | undefined;
+        if (parsedSortOrder && isInvoiceSortingOrder(parsedSortOrder)) {
+          sortingOrder = parsedSortOrder;
+        }
+
+        if (sortingField) {
+          setSortingParams({
+            field: sortingField,
+            order: sortingOrder,
           });
         }
+      } else {
+        setSortingParams(undefined);
       }
     }
-  }, [router.isReady, router.query.sortBy]);
+  }, [router.isReady, router.query.sortBy, router.query.sortOrder]);
+
+  console.log(sortingParams);
 
   return (
     <AuthGuard>
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="lg">
-          <InvoiceListContainer />
+          <InvoiceListContainer sorting={sortingParams} />
         </Container>
       </CompanyDetailsGuard>
     </AuthGuard>

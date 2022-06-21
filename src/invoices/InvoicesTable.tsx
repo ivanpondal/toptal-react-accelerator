@@ -1,4 +1,9 @@
-import { GridRowId, DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+  GridRowId,
+  DataGrid,
+  GridColDef,
+  GridSortModel,
+} from "@mui/x-data-grid";
 import { ContextMenu } from "../components/ContextMenu";
 import {
   DataTestLoadingOverlay,
@@ -7,7 +12,7 @@ import {
   DataTestNoRowsOverlay,
 } from "../components/data-test-grid";
 
-const columns: GridColDef[] = [
+const columns: (sortable: boolean) => GridColDef[] = (sortable = false) => [
   {
     field: "number",
     headerName: "Invoice number",
@@ -15,16 +20,23 @@ const columns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: "company",
+    field: "companyName",
     headerName: "Company name",
     flex: 1.75,
-    sortable: false,
+    sortable: sortable,
   },
   {
-    field: "date",
+    field: "creationDate",
     headerName: "Date",
     flex: 1.25,
-    sortable: false,
+    sortable: sortable,
+    valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
+  },
+  {
+    field: "dueDate",
+    headerName: "Due Date",
+    flex: 1.25,
+    sortable: sortable,
     valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
   },
   {
@@ -36,7 +48,7 @@ const columns: GridColDef[] = [
   {
     field: "price",
     headerName: "Price",
-    sortable: false,
+    sortable: sortable,
     flex: 1,
     type: "number",
   },
@@ -62,23 +74,41 @@ const columns: GridColDef[] = [
   },
 ];
 
-export const InvoicesTable = (props: {
-  invoices: Array<{
-    id: string;
-    number: string;
-    company: string;
-    date: number;
-    project?: string;
-    price: number;
-  }>;
-  loading: boolean;
-  onRowClick: (rowId: GridRowId) => unknown;
-}) => {
-  const { invoices, loading, onRowClick } = props;
+export type TableInvoice = {
+  id: string;
+  number: string;
+  companyName: string;
+  creationDate: number;
+  dueDate: number;
+  project?: string;
+  total: number;
+};
+
+export type SortingProps = {
+  sortModel?: GridSortModel;
+  onSortModelChange?: (model: GridSortModel) => void;
+};
+
+export const InvoicesTable = (
+  props: {
+    invoices: Array<TableInvoice>;
+    loading: boolean;
+    onRowClick: (rowId: GridRowId) => unknown;
+    sortable?: boolean;
+  } & SortingProps
+) => {
+  const {
+    invoices,
+    loading,
+    onRowClick,
+    sortModel,
+    onSortModelChange,
+    sortable = false,
+  } = props;
   return (
     <div data-test="invoices-table">
       <DataGrid
-        columns={columns}
+        columns={columns(sortable)}
         rows={invoices}
         hideFooter
         disableColumnMenu
@@ -91,6 +121,10 @@ export const InvoicesTable = (props: {
           Cell: DataTestCell("invoice"),
           NoRowsOverlay: DataTestNoRowsOverlay,
         }}
+        sortModel={sortModel}
+        onSortModelChange={onSortModelChange}
+        sortingMode="server"
+        columnVisibilityModel={{ dueDate: sortable }}
       />
     </div>
   );

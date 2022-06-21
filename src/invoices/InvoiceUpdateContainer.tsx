@@ -34,7 +34,7 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
     if (invoiceId) {
       loadInvoice({ id: invoiceId });
     }
-  }, [invoiceId]);
+  }, [invoiceId, loadInvoice]);
 
   const { execute: loadClientNames, value: clientNames } = useAsync(
     async () => {
@@ -55,7 +55,7 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
 
   useEffect(() => {
     loadClientNames({});
-  }, []);
+  }, [loadClientNames]);
 
   const [successfulUpdateMessage, setSuccessfulUpdateMessage] = useState<
     string | null
