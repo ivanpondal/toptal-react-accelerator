@@ -3,7 +3,7 @@ import Link from "next/link";
 import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
 import { InvoicesTable } from "./InvoicesTable";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useAsync } from "../hooks/useAsync";
 import { InvoiceAPI } from "../api/base";
 
@@ -15,27 +15,31 @@ export const LatestInvoicesTableContainer = () => {
     value: invoicesResponse,
     error,
     status,
-  } = useAsync((params: any) =>
-    InvoiceAPI.getAll(params)
-      .then((res) => res.invoices)
-      .then((res) =>
-        res.map((invoiceWithDetails) => {
-          return {
-            id: invoiceWithDetails.invoice.id,
-            number: invoiceWithDetails.invoice.invoice_number,
-            companyName: invoiceWithDetails.client.companyDetails.name,
-            creationDate: invoiceWithDetails.invoice.date,
-            dueDate: invoiceWithDetails.invoice.dueDate,
-            project: invoiceWithDetails.invoice.projectCode,
-            total: invoiceWithDetails.invoice.value,
-          };
-        })
-      )
+  } = useAsync(
+    useCallback(
+      (params: any) =>
+        InvoiceAPI.getAll(params)
+          .then((res) => res.invoices)
+          .then((res) =>
+            res.map((invoiceWithDetails) => {
+              return {
+                id: invoiceWithDetails.invoice.id,
+                number: invoiceWithDetails.invoice.invoice_number,
+                companyName: invoiceWithDetails.client.companyDetails.name,
+                creationDate: invoiceWithDetails.invoice.date,
+                dueDate: invoiceWithDetails.invoice.dueDate,
+                project: invoiceWithDetails.invoice.projectCode,
+                total: invoiceWithDetails.invoice.value,
+              };
+            })
+          ),
+      []
+    )
   );
 
   useEffect(() => {
     execute({ sort: { creation: "desc" }, limit: 10 });
-  }, []);
+  }, [execute]);
 
   let invoices = invoicesResponse ? invoicesResponse : [];
 

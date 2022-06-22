@@ -1,7 +1,7 @@
 import { Alert, Box, Button, IconButton, Typography } from "@mui/material";
 import ClientsTable from "./ClientsTable";
 import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { ClientAPI } from "../api/base";
 import { useAsync } from "../hooks/useAsync";
 import { useRouter } from "next/router";
@@ -15,22 +15,26 @@ export default function LatestClientsTableContainer() {
     value: clientsResponse,
     error,
     status,
-  } = useAsync((params: any) =>
-    ClientAPI.getAll(params)
-      .then((res) => res.clients)
-      .then((res) =>
-        res.map((client) => {
-          return {
-            companyName: client.companyDetails.name,
-            ...client,
-          };
-        })
-      )
+  } = useAsync(
+    useCallback(
+      (params: any) =>
+        ClientAPI.getAll(params)
+          .then((res) => res.clients)
+          .then((res) =>
+            res.map((client) => {
+              return {
+                companyName: client.companyDetails.name,
+                ...client,
+              };
+            })
+          ),
+      []
+    )
   );
 
   useEffect(() => {
     execute({ sort: { creation: "desc" }, limit: 10 });
-  }, []);
+  }, [execute]);
 
   let clients = clientsResponse ? clientsResponse : [];
 
