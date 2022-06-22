@@ -1,7 +1,7 @@
 import produce from "immer";
 import create from "zustand";
 import { InvoiceAPI, InvoiceListingSorting } from "../api/base";
-import { InvoiceSortingParams } from "./InvoiceListContainer";
+import { InvoiceSortingParams } from "./invoice-list-types";
 import { TableInvoice } from "./InvoicesTable";
 
 type InvoiceStore = {

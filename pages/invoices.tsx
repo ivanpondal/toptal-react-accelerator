@@ -5,13 +5,13 @@ import { AuthGuard } from "../src/auth/AuthGuard";
 import { CompanyDetailsGuard } from "../src/company/CompanyDetailsGuard";
 import parseQueryParam from "../src/integration/query-params";
 import {
-  InvoiceListContainer,
-  InvoiceSortingField,
-  InvoiceSortingOrder,
   InvoiceSortingParams,
+  InvoiceSortingField,
   isInvoiceSortingField,
+  InvoiceSortingOrder,
   isInvoiceSortingOrder,
-} from "../src/invoices/InvoiceListContainer";
+} from "../src/invoices/invoice-list-types";
+import { InvoiceListContainer } from "../src/invoices/InvoiceListContainer";
 
 export default function InvoiceList() {
   const router = useRouter();
@@ -19,6 +19,7 @@ export default function InvoiceList() {
     InvoiceSortingParams | undefined
   >(undefined);
 
+  // router sorting params change event
   useEffect(() => {
     if (router.isReady) {
       if (router.query.sortBy) {
@@ -49,8 +50,6 @@ export default function InvoiceList() {
       }
     }
   }, [router.isReady, router.query.sortBy, router.query.sortOrder]);
-
-  console.log(sortingParams);
 
   return (
     <AuthGuard>
