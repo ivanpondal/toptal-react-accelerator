@@ -84,9 +84,18 @@ export type TableInvoice = {
   total: number;
 };
 
-export type SortingProps = {
+export type GridSortingProps = {
+  sortable?: boolean;
   sortModel?: GridSortModel;
   onSortModelChange?: (model: GridSortModel) => void;
+};
+
+export type GridPaginationProps = {
+  pagination?: true;
+  page?: number;
+  totalRowCount?: number;
+  pageSize?: number;
+  onPageChange?: (pageNumber: number) => void;
 };
 
 export const InvoicesTable = (
@@ -94,8 +103,8 @@ export const InvoicesTable = (
     invoices: Array<TableInvoice>;
     loading: boolean;
     onRowClick: (rowId: GridRowId) => unknown;
-    sortable?: boolean;
-  } & SortingProps
+  } & GridSortingProps &
+    GridPaginationProps
 ) => {
   const {
     invoices,
@@ -104,13 +113,17 @@ export const InvoicesTable = (
     sortModel,
     onSortModelChange,
     sortable = false,
+    pagination,
+    totalRowCount,
+    pageSize,
+    onPageChange,
   } = props;
   return (
     <div data-test="invoices-table">
       <DataGrid
         columns={columns(sortable)}
         rows={invoices}
-        hideFooter
+        hideFooter={!pagination}
         disableColumnMenu
         autoHeight
         loading={loading}
@@ -125,6 +138,12 @@ export const InvoicesTable = (
         onSortModelChange={onSortModelChange}
         sortingMode="server"
         columnVisibilityModel={{ dueDate: sortable }}
+        pagination={pagination}
+        paginationMode="server"
+        rowsPerPageOptions={[10]}
+        rowCount={totalRowCount}
+        pageSize={pageSize}
+        onPageChange={onPageChange}
       />
     </div>
   );

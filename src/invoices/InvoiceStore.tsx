@@ -9,18 +9,25 @@ type InvoiceStore = {
     invoices: Array<TableInvoice>;
     fetchStatus: "error" | "idle" | "pending" | "success";
     errorMessage: string | null;
+    total: number;
   };
   fetchInvoiceList: (params: FetchInvoiceParams) => unknown;
 };
 
 type FetchInvoiceParams = {
   sort?: InvoiceSortingParams;
+  page?: number;
 };
 
 export const useInvoiceStore = create<InvoiceStore>((set) => ({
-  invoiceList: { invoices: [], fetchStatus: "idle", errorMessage: null },
+  invoiceList: {
+    invoices: [],
+    fetchStatus: "idle",
+    errorMessage: null,
+    total: 0,
+  },
   fetchInvoiceList: async (params) => {
-    const { sort } = params;
+    const { sort, page } = params;
     set(
       produce((draft: InvoiceStore) => {
         draft.invoiceList.invoices = [];
@@ -48,9 +55,26 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
       };
     }
 
+    const limit = 10;
+    let offset = 0;
+    if (page) {
+      offset = (page - 1) * limit;
+    }
+
     try {
-      const response = await InvoiceAPI.getAll({ sort: apiSortModel })
-        .then((res) => res.invoices)
+      const response = await InvoiceAPI.getAll({
+        sort: apiSortModel,
+        offset: offset,
+        limit: limit,
+      })
+        .then((res) => {
+          set(
+            produce((draft) => {
+              draft.invoiceList.total = res.total;
+            })
+          );
+          return res.invoices;
+        })
         .then((res) =>
           res.map((invoiceWithDetails) => {
             return {
@@ -66,15 +90,16 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
         );
 
       set(
-        produce((draft: InvoiceStore) => {
+        produce((draft) => {
           draft.invoiceList.invoices = response;
           draft.invoiceList.fetchStatus = "success";
         })
       );
     } catch (error: any) {
       set(
-        produce((draft: InvoiceStore) => {
+        produce((draft) => {
           draft.invoiceList.invoices = [];
+          draft.invoiceList.total = 0;
           draft.invoiceList.fetchStatus = "error";
           draft.invoiceList.errorMessage =
             "Oops! Something went wrong with the server";

@@ -9,8 +9,10 @@ import { InvoiceSortingParams } from "./invoice-list-types";
 
 export const InvoiceListContainer = (props: {
   sorting?: InvoiceSortingParams;
+  page?: number;
 }) => {
-  const { sorting } = props;
+  const router = useRouter();
+  const { sorting, page } = props;
 
   const tableSortModel = sorting
     ? [
@@ -21,16 +23,18 @@ export const InvoiceListContainer = (props: {
       ]
     : [];
 
-  const router = useRouter();
-
-  const { invoices, fetchStatus, errorMessage } = useInvoiceStore(
-    (state) => state.invoiceList
-  );
+  const {
+    invoices,
+    total: totalInvoices,
+    fetchStatus,
+    errorMessage,
+  } = useInvoiceStore((state) => state.invoiceList);
   const fetchInvoiceList = useInvoiceStore((state) => state.fetchInvoiceList);
 
+  // sorting or page change event
   useEffect(() => {
-    fetchInvoiceList({ sort: sorting });
-  }, [fetchInvoiceList, sorting]);
+    fetchInvoiceList({ sort: sorting, page: page });
+  }, [fetchInvoiceList, sorting, page]);
 
   return (
     <div style={{ display: "block" }}>
@@ -67,6 +71,10 @@ export const InvoiceListContainer = (props: {
             );
           }
         }}
+        pagination
+        onPageChange={(page) => router.push(`invoices?page=${page + 1}`)}
+        totalRowCount={totalInvoices}
+        pageSize={invoices.length}
       />
     </div>
   );

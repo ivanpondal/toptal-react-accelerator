@@ -199,14 +199,16 @@ type InvoiceWithClientDetails = {
 export const InvoiceAPI = {
   getAll: async function (params: {
     sort?: InvoiceListingSorting;
+    offset?: number;
     limit?: number;
   }) {
     const encodedParams = encodeURIComponent(JSON.stringify(params));
 
     return await executeRequest(() =>
-      invoiceBackendAPI.get<{ invoices: InvoiceWithClientDetails[] }>(
-        `/invoices?params=${encodedParams}`
-      )
+      invoiceBackendAPI.get<{
+        invoices: InvoiceWithClientDetails[];
+        total: number;
+      }>(`/invoices?params=${encodedParams}`)
     );
   },
   getById: async function (id: string) {

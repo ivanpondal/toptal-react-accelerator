@@ -89,7 +89,9 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
   let invoiceForm = invoice ? invoice : undefined;
 
   let errorMessage;
-  if (error) {
+  if (error === "invoice with that number already exists") {
+    errorMessage = "Invoice number already exists";
+  } else if (error) {
     errorMessage = "Oops! Something went wrong with the server";
   }
 

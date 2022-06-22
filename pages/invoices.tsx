@@ -18,6 +18,7 @@ export default function InvoiceList() {
   const [sortingParams, setSortingParams] = useState<
     InvoiceSortingParams | undefined
   >(undefined);
+  const [page, setPage] = useState<number | undefined>(undefined);
 
   // router sorting params change event
   useEffect(() => {
@@ -51,11 +52,26 @@ export default function InvoiceList() {
     }
   }, [router.isReady, router.query.sortBy, router.query.sortOrder]);
 
+  // router paging params change event
+  useEffect(() => {
+    if (router.isReady) {
+      if (router.query.page) {
+        const parsedPage = parseQueryParam(router.query.page);
+        const pageNumber = parsedPage ? parseInt(parsedPage) : NaN;
+        if (!isNaN(pageNumber) && pageNumber > 0) {
+          setPage(pageNumber);
+        }
+      } else {
+        setPage(undefined);
+      }
+    }
+  }, [router.isReady, router.query.page]);
+
   return (
     <AuthGuard>
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="lg">
-          <InvoiceListContainer sorting={sortingParams} />
+          <InvoiceListContainer sorting={sortingParams} page={page} />
         </Container>
       </CompanyDetailsGuard>
     </AuthGuard>

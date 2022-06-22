@@ -1,7 +1,7 @@
 import { ClientAPI, InvoiceAPI } from "../api/base";
 import InvoiceForm, { InvoiceDetailsFormData } from "./InvoiceForm";
 import { useAsync } from "../hooks/useAsync";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function InvoiceCreationContainer() {
   const { execute: loadClientNames, value: clientNames } = useAsync(
@@ -26,7 +26,7 @@ export default function InvoiceCreationContainer() {
   >(null);
 
   const { execute, value, error, status } = useAsync(
-    async (params: InvoiceDetailsFormData) => {
+    useCallback(async (params: InvoiceDetailsFormData) => {
       setSuccessfulUpdateMessage(null);
       return await InvoiceAPI.create({
         invoice_number: params.invoiceNumber,
@@ -39,17 +39,19 @@ export default function InvoiceCreationContainer() {
       }).then(() =>
         setSuccessfulUpdateMessage("Invoice created successfully!")
       );
-    }
+    }, [])
   );
 
   useEffect(() => {
     loadClientNames({});
-  }, []);
+  }, [loadClientNames]);
 
   let clientNamesForm = clientNames ? clientNames : {};
 
   let errorMessage;
-  if (error) {
+  if (error === "invoice with that number already exists") {
+    errorMessage = "Invoice number already exists";
+  } else if (error) {
     errorMessage = "Oops! Something went wrong with the server";
   }
 
