@@ -1,7 +1,7 @@
 import { Alert, Box, IconButton, Typography } from "@mui/material";
 import { InvoicesTable } from "./InvoicesTable";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
 import Link from "next/link";
 import { useInvoiceStore } from "./InvoiceStore";
@@ -13,6 +13,36 @@ export const InvoiceListContainer = (props: {
 }) => {
   const router = useRouter();
   const { sorting, page } = props;
+
+  const renderQueryParams = useCallback(
+    (params: {
+      sortingParams?: InvoiceSortingParams | null;
+      pageNumber?: number;
+    }) => {
+      const { sortingParams = sorting, pageNumber = page } = params;
+
+      let paginationQueryParams;
+      if (pageNumber) {
+        paginationQueryParams = `page=${pageNumber}`;
+      }
+
+      let sortingQueryParams;
+      if (sortingParams) {
+        sortingQueryParams = `sortBy=${
+          sortingParams.field
+        }&sortOrder=${sortingParams.order?.toUpperCase()}`;
+      } else if (sortingParams === null) {
+        sortingQueryParams = undefined;
+      }
+
+      let queryParams = [paginationQueryParams, sortingQueryParams]
+        .filter((value) => value !== undefined)
+        .join("&");
+
+      return queryParams ? `?${queryParams}` : "";
+    },
+    [sorting, page]
+  );
 
   const tableSortModel = sorting
     ? [
@@ -61,20 +91,22 @@ export const InvoiceListContainer = (props: {
         sortable={true}
         sortModel={tableSortModel}
         onSortModelChange={(model) => {
-          if (model.length === 0) {
-            router.push("/invoices");
-          } else {
-            router.push(
-              `/invoices?sortBy=${
-                model[0].field
-              }&sortOrder=${model[0].sort?.toUpperCase()}`
-            );
-          }
+          const sortingParams =
+            model.length === 0
+              ? null
+              : ({
+                  field: model[0].field,
+                  order: model[0].sort,
+                } as InvoiceSortingParams);
+          router.push(
+            `/invoices${renderQueryParams({ sortingParams: sortingParams })}`
+          );
         }}
         pagination
-        onPageChange={(page) => router.push(`invoices?page=${page + 1}`)}
+        onPageChange={(page) =>
+          router.push(`invoices${renderQueryParams({ pageNumber: page + 1 })}`)
+        }
         totalRowCount={totalInvoices}
-        pageSize={invoices.length}
       />
     </div>
   );

@@ -94,9 +94,10 @@ export type GridPaginationProps = {
   pagination?: true;
   page?: number;
   totalRowCount?: number;
-  pageSize?: number;
   onPageChange?: (pageNumber: number) => void;
 };
+
+const PAGE_SIZE = 10;
 
 export const InvoicesTable = (
   props: {
@@ -115,7 +116,6 @@ export const InvoicesTable = (
     sortable = false,
     pagination,
     totalRowCount,
-    pageSize,
     onPageChange,
   } = props;
   return (
@@ -139,10 +139,10 @@ export const InvoicesTable = (
         sortingMode="server"
         columnVisibilityModel={{ dueDate: sortable }}
         pagination={pagination}
-        paginationMode="server"
-        rowsPerPageOptions={[10]}
+        paginationMode={pagination ? "server" : "client"}
         rowCount={totalRowCount}
-        pageSize={pageSize}
+        pageSize={PAGE_SIZE}
+        rowsPerPageOptions={[PAGE_SIZE]}
         onPageChange={onPageChange}
       />
     </div>
