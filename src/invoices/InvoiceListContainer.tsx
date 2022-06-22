@@ -58,7 +58,7 @@ export const InvoiceListContainer = (props: {
   const fetchInvoiceList = useInvoiceStore((state) => state.fetchInvoiceList);
 
   useEffect(() => {
-    fetchInvoiceList({ sort: sorting, limit: 10 });
+    fetchInvoiceList({ sort: sorting });
   }, [fetchInvoiceList, sorting]);
 
   return (

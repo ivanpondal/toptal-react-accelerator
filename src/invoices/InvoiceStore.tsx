@@ -14,7 +14,7 @@ type InvoiceStore = {
 };
 
 type FetchInvoiceParams = {
-  sort: InvoiceSortingParams;
+  sort?: InvoiceSortingParams;
 };
 
 export const useInvoiceStore = create<InvoiceStore>((set) => ({
