@@ -1,7 +1,7 @@
 import { Alert, Box, IconButton, Typography } from "@mui/material";
 import { InvoicesTable } from "./InvoicesTable";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
 import Link from "next/link";
 import { useInvoiceStore } from "./InvoiceStore";
@@ -36,10 +36,6 @@ export type InvoiceSortingParams = {
   order?: "asc" | "desc";
 };
 
-type FetchInvoiceParams = {
-  sort: InvoiceSortingParams;
-};
-
 export const InvoiceListContainer = (props: {
   sorting?: InvoiceSortingParams;
 }) => {
@@ -62,8 +58,8 @@ export const InvoiceListContainer = (props: {
   const fetchInvoiceList = useInvoiceStore((state) => state.fetchInvoiceList);
 
   useEffect(() => {
-    fetchInvoiceList({ sort: { creation: "desc" }, limit: 10 });
-  }, [fetchInvoiceList]);
+    fetchInvoiceList({ sort: sorting, limit: 10 });
+  }, [fetchInvoiceList, sorting]);
 
   return (
     <div style={{ display: "block" }}>

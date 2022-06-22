@@ -172,6 +172,10 @@ export const ClientAPI = {
 };
 
 export type InvoiceListingSorting = {
+  date?: "asc" | "desc";
+  price?: "asc" | "desc";
+  companyName?: "asc" | "desc";
+  dueDate?: "asc" | "desc";
   creation?: "asc" | "desc";
 };
 

@@ -1,6 +1,7 @@
 import produce from "immer";
 import create from "zustand";
-import { InvoiceAPI } from "../api/base";
+import { InvoiceAPI, InvoiceListingSorting } from "../api/base";
+import { InvoiceSortingParams } from "./InvoiceListContainer";
 import { TableInvoice } from "./InvoicesTable";
 
 type InvoiceStore = {
@@ -9,12 +10,17 @@ type InvoiceStore = {
     fetchStatus: "error" | "idle" | "pending" | "success";
     errorMessage: string | null;
   };
-  fetchInvoiceList: (params: any) => unknown;
+  fetchInvoiceList: (params: FetchInvoiceParams) => unknown;
+};
+
+type FetchInvoiceParams = {
+  sort: InvoiceSortingParams;
 };
 
 export const useInvoiceStore = create<InvoiceStore>((set) => ({
   invoiceList: { invoices: [], fetchStatus: "idle", errorMessage: null },
   fetchInvoiceList: async (params) => {
+    const { sort } = params;
     set(
       produce((draft: InvoiceStore) => {
         draft.invoiceList.invoices = [];
@@ -23,8 +29,27 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
       })
     );
 
+    let apiSortModel;
+    if (sort && sort.field) {
+      let apiSortField: keyof InvoiceListingSorting;
+      switch (sort.field) {
+        case "creationDate":
+          apiSortField = "date";
+          break;
+        case "total":
+          apiSortField = "price";
+          break;
+        default:
+          apiSortField = sort.field;
+      }
+
+      apiSortModel = {
+        [apiSortField]: sort.order,
+      };
+    }
+
     try {
-      const response = await InvoiceAPI.getAll({})
+      const response = await InvoiceAPI.getAll({ sort: apiSortModel })
         .then((res) => res.invoices)
         .then((res) =>
           res.map((invoiceWithDetails) => {

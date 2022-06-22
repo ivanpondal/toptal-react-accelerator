@@ -1,7 +1,7 @@
 import { ClientAPI, InvoiceAPI } from "../api/base";
 import InvoiceForm, { InvoiceDetailsFormData } from "./InvoiceForm";
 import { useAsync } from "../hooks/useAsync";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Typography } from "@mui/material";
 
 export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
@@ -13,21 +13,26 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
     error: invoiceLoadingError,
     status: invoiceLoadingStatus,
   } = useAsync(
-    async (params: { id: string }): Promise<InvoiceDetailsFormData> => {
-      return await InvoiceAPI.getById(params.id)
-        .then((res) => res.invoice)
-        .then((invoice) => {
-          return {
-            invoiceDate: new Date(invoice.date),
-            invoiceDueDate: new Date(invoice.dueDate),
-            invoiceNumber: invoice.invoice_number,
-            invoiceProjectCode: invoice.projectCode ? invoice.projectCode : "",
-            invoiceClientId: invoice.client_id,
-            items: invoice.meta?.items ? invoice.meta?.items : [],
-            total: invoice.value,
-          };
-        });
-    }
+    useCallback(
+      async (params: { id: string }): Promise<InvoiceDetailsFormData> => {
+        return await InvoiceAPI.getById(params.id)
+          .then((res) => res.invoice)
+          .then((invoice) => {
+            return {
+              invoiceDate: new Date(invoice.date),
+              invoiceDueDate: new Date(invoice.dueDate),
+              invoiceNumber: invoice.invoice_number,
+              invoiceProjectCode: invoice.projectCode
+                ? invoice.projectCode
+                : "",
+              invoiceClientId: invoice.client_id,
+              items: invoice.meta?.items ? invoice.meta?.items : [],
+              total: invoice.value,
+            };
+          });
+      },
+      []
+    )
   );
 
   useEffect(() => {
@@ -37,7 +42,7 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
   }, [invoiceId, loadInvoice]);
 
   const { execute: loadClientNames, value: clientNames } = useAsync(
-    async () => {
+    useCallback(async () => {
       return await ClientAPI.getAllNames()
         .then((res) => res.clients)
         .then((clients) =>
@@ -50,7 +55,7 @@ export default function InvoiceUpdateContainer(props: { invoiceId?: string }) {
           ])
         )
         .then((clientPairs) => Object.fromEntries(clientPairs));
-    }
+    }, [])
   );
 
   useEffect(() => {

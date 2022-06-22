@@ -46,7 +46,7 @@ const columns: (sortable: boolean) => GridColDef[] = (sortable = false) => [
     sortable: false,
   },
   {
-    field: "price",
+    field: "total",
     headerName: "Price",
     sortable: sortable,
     flex: 1,
