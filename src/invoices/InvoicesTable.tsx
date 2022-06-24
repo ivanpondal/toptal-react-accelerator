@@ -7,7 +7,6 @@ import {
   GridToolbarContainer,
   GridToolbarFilterButton,
   getGridStringOperators,
-  GridFilterInputValueProps,
   GridFilterModel,
 } from "@mui/x-data-grid";
 import { useState } from "react";
@@ -20,10 +19,11 @@ import {
   AutocompleteFilter,
 } from "../components/custom-grid";
 
-const columns: (sortable: boolean, filtering: boolean) => GridColDef[] = (
-  sortable = false,
-  filtering = false
-) => [
+const columns: (
+  sortable: boolean,
+  filtering: boolean,
+  filterClientNames: { id: string; label: string }[]
+) => GridColDef[] = (sortable, filtering, filterClientNames) => [
   {
     field: "number",
     headerName: "Invoice number",
@@ -42,7 +42,7 @@ const columns: (sortable: boolean, filtering: boolean) => GridColDef[] = (
       .map((operator) => ({
         ...operator,
         InputComponent: AutocompleteFilter,
-        InputComponentProps: { options: [{ id: "324", label: "Apple" }] },
+        InputComponentProps: { options: filterClientNames },
       })),
   },
   {
@@ -125,6 +125,8 @@ export type GridPaginationProps = {
 export type GridFilteringProps = {
   filtering?: true;
   onFilterChange?: (model: GridFilterModel) => void;
+  filterClientNames?: { id: string; label: string }[];
+  selectedClientName?: string;
 };
 
 const PAGE_SIZE = 10;
@@ -160,6 +162,8 @@ export const InvoicesTable = (
     onPageChange,
     filtering = false,
     onFilterChange,
+    filterClientNames = [],
+    selectedClientName,
   } = props;
 
   const [filterButtonEl, setFilterButtonEl] =
@@ -168,7 +172,7 @@ export const InvoicesTable = (
   return (
     <div data-test="invoices-table">
       <DataGrid
-        columns={columns(sortable, filtering)}
+        columns={columns(sortable, filtering, filterClientNames)}
         rows={invoices}
         hideFooter={!pagination}
         disableColumnMenu
@@ -201,6 +205,19 @@ export const InvoicesTable = (
         rowsPerPageOptions={[PAGE_SIZE]}
         onPageChange={onPageChange}
         filterMode={"server"}
+        filterModel={
+          filtering && selectedClientName
+            ? {
+                items: [
+                  {
+                    columnField: "companyName",
+                    value: selectedClientName,
+                    operatorValue: "equals",
+                  },
+                ],
+              }
+            : { items: [] }
+        }
         onFilterModelChange={onFilterChange}
       />
     </div>

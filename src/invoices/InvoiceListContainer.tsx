@@ -6,6 +6,8 @@ import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
 import Link from "next/link";
 import { useInvoiceStore } from "./InvoiceStore";
 import { InvoiceSortingParams } from "./invoice-list-types";
+import { ClientAPI } from "../api/base";
+import { useAsync } from "../hooks/useAsync";
 
 export const InvoiceListContainer = (props: {
   sorting?: InvoiceSortingParams;
@@ -13,6 +15,26 @@ export const InvoiceListContainer = (props: {
   companyNameFilter?: string;
 }) => {
   const router = useRouter();
+
+  const { execute: loadClientNames, value: clientNames } = useAsync(
+    useCallback(async () => {
+      return await ClientAPI.getAllNames()
+        .then((res) => res.clients)
+        .then((clients) =>
+          clients.map((item) => ({
+            id: item.id,
+            label: item.companyName,
+          }))
+        );
+    }, [])
+  );
+
+  useEffect(() => {
+    loadClientNames({});
+  }, [loadClientNames]);
+
+  let filterClientNames = clientNames ? clientNames : [];
+
   const { sorting, page, companyNameFilter } = props;
 
   const renderQueryParams = useCallback(
@@ -134,6 +156,8 @@ export const InvoiceListContainer = (props: {
             })}`
           );
         }}
+        filterClientNames={filterClientNames}
+        selectedClientName={companyNameFilter}
       />
     </div>
   );

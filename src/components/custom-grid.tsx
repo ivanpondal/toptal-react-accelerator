@@ -34,7 +34,6 @@ export const AutocompleteFilter = (
   props: GridFilterInputValueProps & Record<string, any>
 ) => {
   const { item, options, applyValue } = props;
-  console.log("filter", props);
   return (
     <Autocomplete
       sx={{ mt: 1, mb: 1, ml: 1, mr: 1 }}
