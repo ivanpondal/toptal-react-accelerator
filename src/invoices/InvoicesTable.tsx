@@ -149,6 +149,7 @@ export const InvoicesTable = (
     pagination,
     totalRowCount,
     onPageChange,
+    page,
     filtering = false,
     onFilterChange,
     filterClientNames = [],
@@ -194,6 +195,7 @@ export const InvoicesTable = (
         pageSize={PAGE_SIZE}
         rowsPerPageOptions={[PAGE_SIZE]}
         onPageChange={onPageChange}
+        page={page ? page - 1 : undefined}
         filterMode={"server"}
         filterModel={
           filtering && selectedClientName

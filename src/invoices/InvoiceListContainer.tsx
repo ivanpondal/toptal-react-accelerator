@@ -163,6 +163,7 @@ export const InvoiceListContainer = (props: {
         onPageChange={(page) =>
           router.push(`invoices${renderQueryParams({ pageNumber: page + 1 })}`)
         }
+        page={page}
         totalRowCount={totalInvoices}
         filtering
         onFilterChange={(filterModel) => {
