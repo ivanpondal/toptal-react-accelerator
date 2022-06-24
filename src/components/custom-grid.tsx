@@ -14,6 +14,8 @@ import {
   gridPageSelector,
   useGridApiContext,
   useGridSelector,
+  GridColumnHeaderParams,
+  GridColumnHeaderTitle,
 } from "@mui/x-data-grid";
 import React from "react";
 
@@ -105,5 +107,18 @@ export function CustomPagination() {
         })}
       </ul>
     </nav>
+  );
+}
+
+export function DataGridHeader(
+  props: GridColumnHeaderParams<any, any, any> & { dataTestId: string }
+) {
+  return (
+    <div data-test={props.dataTestId}>
+      <GridColumnHeaderTitle
+        label={props.colDef.headerName ? props.colDef.headerName : props.field}
+        columnWidth={props.colDef.computedWidth}
+      />
+    </div>
   );
 }

@@ -5,6 +5,10 @@ import {
   GridSortModel,
   getGridStringOperators,
   GridFilterModel,
+  GridHeader,
+  GridColumnHeaderParams,
+  GridColumnHeaderItem,
+  GridColumnHeaderTitle,
 } from "@mui/x-data-grid";
 import { useState } from "react";
 import { ContextMenu } from "../components/ContextMenu";
@@ -16,6 +20,7 @@ import {
   AutocompleteFilter,
   CustomToolbar,
   CustomPagination,
+  DataGridHeader,
 } from "../components/custom-grid";
 
 const columns: (
@@ -43,6 +48,9 @@ const columns: (
         InputComponent: AutocompleteFilter,
         InputComponentProps: { options: filterClientNames },
       })),
+    renderHeader: (params) => (
+      <DataGridHeader {...params} dataTestId="company-name-header" />
+    ),
   },
   {
     field: "creationDate",
@@ -51,6 +59,9 @@ const columns: (
     sortable: sortable,
     filterable: false,
     valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
+    renderHeader: (params) => (
+      <DataGridHeader {...params} dataTestId="creation-date-header" />
+    ),
   },
   {
     field: "dueDate",
@@ -59,6 +70,9 @@ const columns: (
     sortable: sortable,
     filterable: false,
     valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
+    renderHeader: (params) => (
+      <DataGridHeader {...params} dataTestId="due-date-header" />
+    ),
   },
   {
     field: "project",
@@ -74,6 +88,9 @@ const columns: (
     filterable: false,
     flex: 1,
     type: "number",
+    renderHeader: (params) => (
+      <DataGridHeader {...params} dataTestId="total-header" />
+    ),
   },
   {
     field: "actions",
