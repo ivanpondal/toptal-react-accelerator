@@ -17,6 +17,7 @@ type InvoiceStore = {
 type FetchInvoiceParams = {
   sort?: InvoiceSortingParams;
   page?: number;
+  companyIdFilter?: string;
 };
 
 export const useInvoiceStore = create<InvoiceStore>((set) => ({
@@ -27,7 +28,7 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
     total: 0,
   },
   fetchInvoiceList: async (params) => {
-    const { sort, page } = params;
+    const { sort, page, companyIdFilter } = params;
     set(
       produce((draft: InvoiceStore) => {
         draft.invoiceList.invoices = [];
@@ -66,6 +67,7 @@ export const useInvoiceStore = create<InvoiceStore>((set) => ({
         sort: apiSortModel,
         offset: offset,
         limit: limit,
+        filter: { clientId: companyIdFilter },
       })
         .then((res) => {
           set(

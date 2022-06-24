@@ -1,7 +1,7 @@
 import { Alert, Box, IconButton, Typography } from "@mui/material";
 import { InvoicesTable } from "./InvoicesTable";
 import { useRouter } from "next/router";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AddBoxIcon from "@mui/icons-material/AddBoxOutlined";
 import Link from "next/link";
 import { useInvoiceStore } from "./InvoiceStore";
@@ -15,6 +15,11 @@ export const InvoiceListContainer = (props: {
   companyNameFilter?: string;
 }) => {
   const router = useRouter();
+  const { sorting, page, companyNameFilter } = props;
+
+  const [companyIdFilter, setCompanyIdFilter] = useState<string | undefined>(
+    undefined
+  );
 
   const { execute: loadClientNames, value: clientNames } = useAsync(
     useCallback(async () => {
@@ -25,8 +30,19 @@ export const InvoiceListContainer = (props: {
             id: item.id,
             label: item.companyName,
           }))
-        );
-    }, [])
+        )
+        .then((labelledClients) => {
+          let selectedClient = labelledClients.find(
+            (client) => client.label === companyNameFilter
+          );
+          if (selectedClient) {
+            setCompanyIdFilter(selectedClient.id);
+          } else {
+            setCompanyIdFilter(undefined);
+          }
+          return labelledClients;
+        });
+    }, [companyNameFilter])
   );
 
   useEffect(() => {
@@ -34,8 +50,6 @@ export const InvoiceListContainer = (props: {
   }, [loadClientNames]);
 
   let filterClientNames = clientNames ? clientNames : [];
-
-  const { sorting, page, companyNameFilter } = props;
 
   const renderQueryParams = useCallback(
     (params: {
@@ -100,10 +114,14 @@ export const InvoiceListContainer = (props: {
   } = useInvoiceStore((state) => state.invoiceList);
   const fetchInvoiceList = useInvoiceStore((state) => state.fetchInvoiceList);
 
-  // sorting or page change event
+  // sorting, page or filter change event
   useEffect(() => {
-    fetchInvoiceList({ sort: sorting, page: page });
-  }, [fetchInvoiceList, sorting, page]);
+    fetchInvoiceList({
+      sort: sorting,
+      page: page,
+      companyIdFilter: companyIdFilter,
+    });
+  }, [fetchInvoiceList, sorting, page, companyIdFilter]);
 
   return (
     <div style={{ display: "block" }}>

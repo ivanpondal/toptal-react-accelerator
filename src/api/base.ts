@@ -201,6 +201,7 @@ export const InvoiceAPI = {
     sort?: InvoiceListingSorting;
     offset?: number;
     limit?: number;
+    filter?: { clientId?: string };
   }) {
     const encodedParams = encodeURIComponent(JSON.stringify(params));
 
