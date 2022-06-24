@@ -21,6 +21,7 @@ import {
   CustomToolbar,
   CustomPagination,
   DataGridHeader,
+  DataTestNoResultsOverlay,
 } from "../components/custom-grid";
 
 const columns: (
@@ -191,6 +192,7 @@ export const InvoicesTable = (
           Row: DataTestRow("invoice"),
           Cell: DataTestCell("invoice"),
           NoRowsOverlay: DataTestNoRowsOverlay,
+          NoResultsOverlay: DataTestNoRowsOverlay,
           Toolbar: CustomToolbar,
           Pagination: CustomPagination,
         }}
