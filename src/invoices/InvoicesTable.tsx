@@ -1,35 +1,56 @@
+import { Autocomplete, TextField } from "@mui/material";
 import {
   GridRowId,
   DataGrid,
   GridColDef,
   GridSortModel,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  getGridStringOperators,
+  GridFilterInputValueProps,
+  GridFilterModel,
 } from "@mui/x-data-grid";
+import { useState } from "react";
 import { ContextMenu } from "../components/ContextMenu";
 import {
   DataTestLoadingOverlay,
   DataTestRow,
   DataTestCell,
   DataTestNoRowsOverlay,
-} from "../components/data-test-grid";
+  AutocompleteFilter,
+} from "../components/custom-grid";
 
-const columns: (sortable: boolean) => GridColDef[] = (sortable = false) => [
+const columns: (sortable: boolean, filtering: boolean) => GridColDef[] = (
+  sortable = false,
+  filtering = false
+) => [
   {
     field: "number",
     headerName: "Invoice number",
     flex: 1.75,
     sortable: false,
+    filterable: false,
   },
   {
     field: "companyName",
     headerName: "Company name",
     flex: 1.75,
     sortable: sortable,
+    filterable: filtering,
+    filterOperators: getGridStringOperators()
+      .filter((operator) => operator.value === "equals")
+      .map((operator) => ({
+        ...operator,
+        InputComponent: AutocompleteFilter,
+        InputComponentProps: { options: [{ id: "324", label: "Apple" }] },
+      })),
   },
   {
     field: "creationDate",
     headerName: "Date",
     flex: 1.25,
     sortable: sortable,
+    filterable: false,
     valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
   },
   {
@@ -37,6 +58,7 @@ const columns: (sortable: boolean) => GridColDef[] = (sortable = false) => [
     headerName: "Due Date",
     flex: 1.25,
     sortable: sortable,
+    filterable: false,
     valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
   },
   {
@@ -44,11 +66,13 @@ const columns: (sortable: boolean) => GridColDef[] = (sortable = false) => [
     headerName: "Project",
     flex: 1,
     sortable: false,
+    filterable: false,
   },
   {
     field: "total",
     headerName: "Price",
     sortable: sortable,
+    filterable: false,
     flex: 1,
     type: "number",
   },
@@ -58,6 +82,7 @@ const columns: (sortable: boolean) => GridColDef[] = (sortable = false) => [
     type: "actions",
     flex: 1,
     sortable: false,
+    filterable: false,
     renderCell: (params) => (
       <ContextMenu
         dataTestId="invoice-actions"
@@ -97,7 +122,22 @@ export type GridPaginationProps = {
   onPageChange?: (pageNumber: number) => void;
 };
 
+export type GridFilteringProps = {
+  filtering?: true;
+  onFilterChange?: (model: GridFilterModel) => void;
+};
+
 const PAGE_SIZE = 10;
+
+const CustomToolbar: React.FunctionComponent<{
+  setFilterButtonEl: React.Dispatch<
+    React.SetStateAction<HTMLButtonElement | null>
+  >;
+}> = ({ setFilterButtonEl }) => (
+  <GridToolbarContainer>
+    <GridToolbarFilterButton ref={setFilterButtonEl} />
+  </GridToolbarContainer>
+);
 
 export const InvoicesTable = (
   props: {
@@ -105,7 +145,8 @@ export const InvoicesTable = (
     loading: boolean;
     onRowClick: (rowId: GridRowId) => unknown;
   } & GridSortingProps &
-    GridPaginationProps
+    GridPaginationProps &
+    GridFilteringProps
 ) => {
   const {
     invoices,
@@ -117,11 +158,17 @@ export const InvoicesTable = (
     pagination,
     totalRowCount,
     onPageChange,
+    filtering = false,
+    onFilterChange,
   } = props;
+
+  const [filterButtonEl, setFilterButtonEl] =
+    useState<HTMLButtonElement | null>(null);
+
   return (
     <div data-test="invoices-table">
       <DataGrid
-        columns={columns(sortable)}
+        columns={columns(sortable, filtering)}
         rows={invoices}
         hideFooter={!pagination}
         disableColumnMenu
@@ -133,6 +180,15 @@ export const InvoicesTable = (
           Row: DataTestRow("invoice"),
           Cell: DataTestCell("invoice"),
           NoRowsOverlay: DataTestNoRowsOverlay,
+          Toolbar: CustomToolbar,
+        }}
+        componentsProps={{
+          panel: {
+            anchorEl: filterButtonEl,
+          },
+          toolbar: {
+            setFilterButtonEl,
+          },
         }}
         sortModel={sortModel}
         onSortModelChange={onSortModelChange}
@@ -144,6 +200,8 @@ export const InvoicesTable = (
         pageSize={PAGE_SIZE}
         rowsPerPageOptions={[PAGE_SIZE]}
         onPageChange={onPageChange}
+        filterMode={"server"}
+        onFilterModelChange={onFilterChange}
       />
     </div>
   );

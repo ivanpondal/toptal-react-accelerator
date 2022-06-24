@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 
 export default function InvoiceCreationContainer() {
   const { execute: loadClientNames, value: clientNames } = useAsync(
-    async () => {
+    useCallback(async () => {
       return await ClientAPI.getAllNames()
         .then((res) => res.clients)
         .then((clients) =>
@@ -18,7 +18,7 @@ export default function InvoiceCreationContainer() {
           ])
         )
         .then((clientPairs) => Object.fromEntries(clientPairs));
-    }
+    }, [])
   );
 
   const [successfulUpdateMessage, setSuccessfulUpdateMessage] = useState<

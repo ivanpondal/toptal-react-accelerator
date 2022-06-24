@@ -15,11 +15,10 @@ import { InvoiceListContainer } from "../src/invoices/InvoiceListContainer";
 
 export default function InvoiceList() {
   const router = useRouter();
+
   const [sortingParams, setSortingParams] = useState<
     InvoiceSortingParams | undefined
   >(undefined);
-  const [page, setPage] = useState<number | undefined>(undefined);
-
   // router sorting params change event
   useEffect(() => {
     if (router.isReady) {
@@ -52,6 +51,7 @@ export default function InvoiceList() {
     }
   }, [router.isReady, router.query.sortBy, router.query.sortOrder]);
 
+  const [page, setPage] = useState<number | undefined>(undefined);
   // router paging params change event
   useEffect(() => {
     if (router.isReady) {
@@ -67,11 +67,32 @@ export default function InvoiceList() {
     }
   }, [router.isReady, router.query.page]);
 
+  const [companyNameFilter, setCompanyNameFilter] = useState<
+    string | undefined
+  >(undefined);
+  // router filtering params change event
+  useEffect(() => {
+    if (router.isReady) {
+      if (router.query.companyFilter) {
+        const companyName = parseQueryParam(router.query.companyFilter);
+        if (companyName) {
+          setCompanyNameFilter(companyName);
+        }
+      } else {
+        setCompanyNameFilter(undefined);
+      }
+    }
+  }, [router.isReady, router.query.companyFilter]);
+
   return (
     <AuthGuard>
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="lg">
-          <InvoiceListContainer sorting={sortingParams} page={page} />
+          <InvoiceListContainer
+            sorting={sortingParams}
+            page={page}
+            companyNameFilter={companyNameFilter}
+          />
         </Container>
       </CompanyDetailsGuard>
     </AuthGuard>

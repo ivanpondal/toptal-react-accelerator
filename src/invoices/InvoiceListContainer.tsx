@@ -10,38 +10,55 @@ import { InvoiceSortingParams } from "./invoice-list-types";
 export const InvoiceListContainer = (props: {
   sorting?: InvoiceSortingParams;
   page?: number;
+  companyNameFilter?: string;
 }) => {
   const router = useRouter();
-  const { sorting, page } = props;
+  const { sorting, page, companyNameFilter } = props;
 
   const renderQueryParams = useCallback(
     (params: {
       sortingParams?: InvoiceSortingParams | null;
       pageNumber?: number;
+      companyFilter?: string | null;
     }) => {
-      const { sortingParams = sorting, pageNumber = page } = params;
+      const {
+        sortingParams = sorting,
+        pageNumber = page,
+        companyFilter = companyNameFilter,
+      } = params;
 
-      let paginationQueryParams;
+      let paginationQueryParam;
       if (pageNumber) {
-        paginationQueryParams = `page=${pageNumber}`;
+        paginationQueryParam = `page=${pageNumber}`;
       }
 
-      let sortingQueryParams;
+      let sortingQueryParam;
       if (sortingParams) {
-        sortingQueryParams = `sortBy=${
+        sortingQueryParam = `sortBy=${
           sortingParams.field
         }&sortOrder=${sortingParams.order?.toUpperCase()}`;
       } else if (sortingParams === null) {
-        sortingQueryParams = undefined;
+        sortingQueryParam = undefined;
       }
 
-      let queryParams = [paginationQueryParams, sortingQueryParams]
+      let companyFilterQueryParam;
+      if (companyFilter) {
+        companyFilterQueryParam = `companyFilter=${companyFilter}`;
+      } else if (companyFilter === null) {
+        companyFilterQueryParam = undefined;
+      }
+
+      let queryParams = [
+        paginationQueryParam,
+        sortingQueryParam,
+        companyFilterQueryParam,
+      ]
         .filter((value) => value !== undefined)
         .join("&");
 
       return queryParams ? `?${queryParams}` : "";
     },
-    [sorting, page]
+    [sorting, page, companyNameFilter]
   );
 
   const tableSortModel = sorting
@@ -107,6 +124,16 @@ export const InvoiceListContainer = (props: {
           router.push(`invoices${renderQueryParams({ pageNumber: page + 1 })}`)
         }
         totalRowCount={totalInvoices}
+        filtering
+        onFilterChange={(filterModel) => {
+          const companyFilter =
+            filterModel.items.length === 0 ? null : filterModel.items[0].value;
+          router.push(
+            `invoices${renderQueryParams({
+              companyFilter: companyFilter,
+            })}`
+          );
+        }}
       />
     </div>
   );
