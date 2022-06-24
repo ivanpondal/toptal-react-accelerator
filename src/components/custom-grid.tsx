@@ -1,4 +1,5 @@
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, PaginationItem, TextField } from "@mui/material";
+import usePagination from "@mui/material/usePagination";
 import {
   GridLoadingOverlay,
   GridRowProps,
@@ -7,6 +8,12 @@ import {
   GridCell,
   GridNoRowsOverlay,
   GridFilterInputValueProps,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  gridPageCountSelector,
+  gridPageSelector,
+  useGridApiContext,
+  useGridSelector,
 } from "@mui/x-data-grid";
 import React from "react";
 
@@ -51,3 +58,52 @@ export const AutocompleteFilter = (
     />
   );
 };
+
+export const CustomToolbar: React.FunctionComponent<{
+  setFilterButtonEl: React.Dispatch<
+    React.SetStateAction<HTMLButtonElement | null>
+  >;
+}> = ({ setFilterButtonEl }) => (
+  <GridToolbarContainer>
+    <GridToolbarFilterButton ref={setFilterButtonEl} />
+  </GridToolbarContainer>
+);
+
+export function CustomPagination() {
+  const apiRef = useGridApiContext();
+  const page = useGridSelector(apiRef, gridPageSelector);
+  const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+
+  const { items } = usePagination({
+    count: pageCount,
+    page: page + 1,
+    onChange: (_, value) => apiRef.current.setPage(value - 1),
+  });
+
+  return (
+    <nav>
+      <ul
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          listStyle: "none",
+          margin: 0,
+          padding: 0,
+          alignItems: "center",
+        }}
+      >
+        {items.map(({ ...item }, index) => {
+          let dataTestId;
+          if (item.type === "page") {
+            dataTestId = `page-${index}`;
+          }
+          return (
+            <li key={index}>
+              <PaginationItem data-test={dataTestId} {...item} />
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}

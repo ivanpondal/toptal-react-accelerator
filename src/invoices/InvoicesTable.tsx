@@ -1,11 +1,8 @@
-import { Autocomplete, TextField } from "@mui/material";
 import {
   GridRowId,
   DataGrid,
   GridColDef,
   GridSortModel,
-  GridToolbarContainer,
-  GridToolbarFilterButton,
   getGridStringOperators,
   GridFilterModel,
 } from "@mui/x-data-grid";
@@ -17,6 +14,8 @@ import {
   DataTestCell,
   DataTestNoRowsOverlay,
   AutocompleteFilter,
+  CustomToolbar,
+  CustomPagination,
 } from "../components/custom-grid";
 
 const columns: (
@@ -131,16 +130,6 @@ export type GridFilteringProps = {
 
 const PAGE_SIZE = 10;
 
-const CustomToolbar: React.FunctionComponent<{
-  setFilterButtonEl: React.Dispatch<
-    React.SetStateAction<HTMLButtonElement | null>
-  >;
-}> = ({ setFilterButtonEl }) => (
-  <GridToolbarContainer>
-    <GridToolbarFilterButton ref={setFilterButtonEl} />
-  </GridToolbarContainer>
-);
-
 export const InvoicesTable = (
   props: {
     invoices: Array<TableInvoice>;
@@ -185,6 +174,7 @@ export const InvoicesTable = (
           Cell: DataTestCell("invoice"),
           NoRowsOverlay: DataTestNoRowsOverlay,
           Toolbar: CustomToolbar,
+          Pagination: CustomPagination,
         }}
         componentsProps={{
           panel: {
