@@ -5,10 +5,6 @@ import {
   GridSortModel,
   getGridStringOperators,
   GridFilterModel,
-  GridHeader,
-  GridColumnHeaderParams,
-  GridColumnHeaderItem,
-  GridColumnHeaderTitle,
 } from "@mui/x-data-grid";
 import { useState } from "react";
 import { ContextMenu } from "../components/ContextMenu";
@@ -21,7 +17,6 @@ import {
   CustomToolbar,
   CustomPagination,
   DataGridHeader,
-  DataTestNoResultsOverlay,
 } from "../components/custom-grid";
 
 const columns: (
