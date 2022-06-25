@@ -1,0 +1,211 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`invoice and client names props should render as invoice and billing data 1`] = `
+<div
+  className="MuiBox-root css-ru8kxu"
+>
+  <h2
+    className="MuiTypography-root MuiTypography-h2 invoiceHeader css-1ckgmu4-MuiTypography-root"
+    data-test="invoice-number"
+  >
+    Invoice # 
+    001
+  </h2>
+  <h5
+    className="MuiTypography-root MuiTypography-h5 invoiceHeader css-xh7455-MuiTypography-root"
+    data-test="invoice-date"
+  >
+    Date: 
+    12/31/2021
+  </h5>
+  <h5
+    className="MuiTypography-root MuiTypography-h5 invoiceHeader css-xh7455-MuiTypography-root"
+    data-test="invoice-due-date"
+  >
+    Due Date: 
+    1/9/2022
+  </h5>
+  <h4
+    className="MuiTypography-root MuiTypography-h4 invoiceHeader css-1t413ox-MuiTypography-root"
+  >
+    Billed to 
+    Fertilot
+  </h4>
+  <hr
+    className="MuiDivider-root MuiDivider-fullWidth css-1sjh9xo-MuiDivider-root"
+  />
+  <h5
+    className="MuiTypography-root MuiTypography-h5 css-1657z6w-MuiTypography-root"
+  >
+     
+    Invoice items
+  </h5>
+  <div
+    className="MuiBox-root css-1fnf33c"
+  >
+    <span
+      className="MuiTypography-root MuiTypography-button css-1o0kh3y-MuiTypography-root"
+    >
+      Description
+    </span>
+    <span
+      className="MuiTypography-root MuiTypography-button css-1f0on15-MuiTypography-root"
+    >
+      Value
+    </span>
+  </div>
+  <div
+    className="jsx-68126bc088c3b37f"
+    data-test="invoice-item-1"
+  >
+    <hr
+      className="MuiDivider-root MuiDivider-fullWidth css-1sjh9xo-MuiDivider-root"
+    />
+    <div
+      className="MuiBox-root css-x1sij0"
+    >
+      <h6
+        className="MuiTypography-root MuiTypography-subtitle1 css-1c1mbpd-MuiTypography-root"
+        data-test="invoice-item-description"
+      >
+        Fertilizer
+      </h6>
+      <h6
+        className="MuiTypography-root MuiTypography-h6 css-1ry679h-MuiTypography-root"
+        data-test="invoice-item-value"
+      >
+        10000
+      </h6>
+    </div>
+  </div>
+  <div
+    className="MuiBox-root css-ynyiwi"
+  >
+    <h5
+      className="MuiTypography-root MuiTypography-h5 css-1f8a19r-MuiTypography-root"
+    >
+      Total
+    </h5>
+    <h5
+      className="MuiTypography-root MuiTypography-h5 css-ag7rrr-MuiTypography-root"
+    >
+      $  
+    </h5>
+    <h4
+      className="MuiTypography-root MuiTypography-h4 css-5lbw0b-MuiTypography-root"
+      data-test="invoice-total"
+    >
+      10000
+    </h4>
+  </div>
+</div>
+`;
+
+exports[`invoice with project code and client names props should render as invoice and billing data with project code 1`] = `
+<div
+  className="MuiBox-root css-ru8kxu"
+>
+  <h2
+    className="MuiTypography-root MuiTypography-h2 invoiceHeader css-1ckgmu4-MuiTypography-root"
+    data-test="invoice-number"
+  >
+    Invoice # 
+    001
+  </h2>
+  <h5
+    className="MuiTypography-root MuiTypography-h5 invoiceHeader css-xh7455-MuiTypography-root"
+    data-test="invoice-date"
+  >
+    Date: 
+    12/31/2021
+  </h5>
+  <h5
+    className="MuiTypography-root MuiTypography-h5 invoiceHeader css-xh7455-MuiTypography-root"
+    data-test="invoice-due-date"
+  >
+    Due Date: 
+    1/9/2022
+  </h5>
+  <h4
+    className="MuiTypography-root MuiTypography-h4 invoiceHeader css-1t413ox-MuiTypography-root"
+  >
+    Billed to 
+    Fertilot
+  </h4>
+  <h6
+    className="MuiTypography-root MuiTypography-h6 invoiceHeader css-1nrmkr4-MuiTypography-root"
+    data-test="invoice-project-code"
+  >
+    "
+    cool project
+    "
+  </h6>
+  <hr
+    className="MuiDivider-root MuiDivider-fullWidth css-1sjh9xo-MuiDivider-root"
+  />
+  <h5
+    className="MuiTypography-root MuiTypography-h5 css-1657z6w-MuiTypography-root"
+  >
+     
+    Invoice items
+  </h5>
+  <div
+    className="MuiBox-root css-1fnf33c"
+  >
+    <span
+      className="MuiTypography-root MuiTypography-button css-1o0kh3y-MuiTypography-root"
+    >
+      Description
+    </span>
+    <span
+      className="MuiTypography-root MuiTypography-button css-1f0on15-MuiTypography-root"
+    >
+      Value
+    </span>
+  </div>
+  <div
+    className="jsx-68126bc088c3b37f"
+    data-test="invoice-item-1"
+  >
+    <hr
+      className="MuiDivider-root MuiDivider-fullWidth css-1sjh9xo-MuiDivider-root"
+    />
+    <div
+      className="MuiBox-root css-x1sij0"
+    >
+      <h6
+        className="MuiTypography-root MuiTypography-subtitle1 css-1c1mbpd-MuiTypography-root"
+        data-test="invoice-item-description"
+      >
+        Fertilizer
+      </h6>
+      <h6
+        className="MuiTypography-root MuiTypography-h6 css-1ry679h-MuiTypography-root"
+        data-test="invoice-item-value"
+      >
+        10000
+      </h6>
+    </div>
+  </div>
+  <div
+    className="MuiBox-root css-ynyiwi"
+  >
+    <h5
+      className="MuiTypography-root MuiTypography-h5 css-1f8a19r-MuiTypography-root"
+    >
+      Total
+    </h5>
+    <h5
+      className="MuiTypography-root MuiTypography-h5 css-ag7rrr-MuiTypography-root"
+    >
+      $  
+    </h5>
+    <h4
+      className="MuiTypography-root MuiTypography-h4 css-5lbw0b-MuiTypography-root"
+      data-test="invoice-total"
+    >
+      10000
+    </h4>
+  </div>
+</div>
+`;
