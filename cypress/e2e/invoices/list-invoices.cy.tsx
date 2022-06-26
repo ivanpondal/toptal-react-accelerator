@@ -25,4 +25,26 @@ describe("/invoices", () => {
     cy.get(`[data-test="invoice-project"]`).should("be.visible");
     cy.get(`[data-test="invoice-total"]`).should("be.visible");
   });
+
+  it("can sort by company name", () => {
+    cy.get(`[data-test='view-all-invoices']`).should("be.visible").click();
+
+    // wait until no longer in dashboard
+    cy.get(`[data-test='view-all-clients']`).should("not.exist");
+    cy.location("pathname").should("eq", "/invoices");
+
+    // sort by company, asc
+    cy.get('[data-test="company-name-header"]').should("be.visible").click();
+    cy.location("search").should("eq", "?sortBy=companyName&sortOrder=ASC");
+    cy.get(
+      `[data-test="invoice-row-ap23"]:first [data-test="invoice-companyName"]`
+    ).contains("Apple");
+
+    // sort by company, desc
+    cy.get('[data-test="company-name-header"]').should("be.visible").click();
+    cy.location("search").should("eq", "?sortBy=companyName&sortOrder=DESC");
+    cy.get(
+      `[data-test="invoice-row-ms1"]:first [data-test="invoice-companyName"]`
+    ).contains("Microsoft");
+  });
 });

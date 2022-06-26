@@ -27,7 +27,7 @@ export const DataTestRow = (id: string) =>
   React.memo(function DataTestRow(
     props: React.HTMLAttributes<HTMLDivElement> & GridRowProps
   ) {
-    return <GridRow data-test={`${id}-row-${props.rowId}}`} {...props} />;
+    return <GridRow data-test={`${id}-row-${props.rowId}`} {...props} />;
   });
 
 export const DataTestCell = (id: string) =>
