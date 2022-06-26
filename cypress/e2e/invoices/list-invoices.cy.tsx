@@ -28,7 +28,6 @@ describe("/invoices", () => {
 
   it("can sort by company name", () => {
     cy.get(`[data-test='view-all-invoices']`).should("be.visible").click();
-
     // wait until no longer in dashboard
     cy.get(`[data-test='view-all-clients']`).should("not.exist");
     cy.location("pathname").should("eq", "/invoices");
@@ -37,14 +36,50 @@ describe("/invoices", () => {
     cy.get('[data-test="company-name-header"]').should("be.visible").click();
     cy.location("search").should("eq", "?sortBy=companyName&sortOrder=ASC");
     cy.get(
-      `[data-test="invoice-row-ap23"]:first [data-test="invoice-companyName"]`
+      `[data-test="invoice-row-ap23"] [data-test="invoice-companyName"]`
     ).contains("Apple");
 
     // sort by company, desc
     cy.get('[data-test="company-name-header"]').should("be.visible").click();
     cy.location("search").should("eq", "?sortBy=companyName&sortOrder=DESC");
     cy.get(
-      `[data-test="invoice-row-ms1"]:first [data-test="invoice-companyName"]`
+      `[data-test="invoice-row-ms1"] [data-test="invoice-companyName"]`
     ).contains("Microsoft");
+  });
+
+  it("can sort by company name and persist sort after reload", () => {
+    cy.get(`[data-test='view-all-invoices']`).should("be.visible").click();
+    // wait until no longer in dashboard
+    cy.get(`[data-test='view-all-clients']`).should("not.exist");
+    cy.location("pathname").should("eq", "/invoices");
+
+    // sort by company, asc
+    cy.get('[data-test="company-name-header"]').should("be.visible").click();
+    cy.location("search").should("eq", "?sortBy=companyName&sortOrder=ASC");
+    cy.get(
+      `[data-test="invoice-row-ap23"] [data-test="invoice-companyName"]`
+    ).contains("Apple");
+
+    cy.reload();
+
+    cy.location("search").should("eq", "?sortBy=companyName&sortOrder=ASC");
+    cy.get(
+      `[data-test="invoice-row-ap23"] [data-test="invoice-companyName"]`
+    ).contains("Apple");
+  });
+
+  it("can move between pages", () => {
+    cy.get(`[data-test='view-all-invoices']`).should("be.visible").click();
+    // wait until no longer in dashboard
+    cy.get(`[data-test='view-all-clients']`).should("not.exist");
+    cy.location("pathname").should("eq", "/invoices");
+
+    cy.get('[data-test="page-2"]').should("be.visible").click();
+    cy.location("search").should("eq", "?page=2");
+    cy.get(`[data-test="invoice-row-ms11"]`).should("be.visible");
+
+    cy.get('[data-test="page-1"]').should("be.visible").click();
+    cy.location("search").should("eq", "?page=1");
+    cy.get(`[data-test="invoice-row-ms1"]`).should("be.visible");
   });
 });
