@@ -70,7 +70,7 @@ export default function EditInvoice() {
 
   useEffect(() => {
     dispatch(createRouterChangeAction(router));
-  }, [state.name, router.isReady, router.query.id]);
+  }, [router, state.name, router.isReady, router.query.id]);
 
   return (
     <AuthGuard>

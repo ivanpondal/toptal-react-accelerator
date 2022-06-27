@@ -172,6 +172,10 @@ export const ClientAPI = {
 };
 
 export type InvoiceListingSorting = {
+  date?: "asc" | "desc";
+  price?: "asc" | "desc";
+  companyName?: "asc" | "desc";
+  dueDate?: "asc" | "desc";
   creation?: "asc" | "desc";
 };
 
@@ -195,14 +199,17 @@ type InvoiceWithClientDetails = {
 export const InvoiceAPI = {
   getAll: async function (params: {
     sort?: InvoiceListingSorting;
+    offset?: number;
     limit?: number;
+    filter?: { clientId?: string };
   }) {
     const encodedParams = encodeURIComponent(JSON.stringify(params));
 
     return await executeRequest(() =>
-      invoiceBackendAPI.get<{ invoices: InvoiceWithClientDetails[] }>(
-        `/invoices?params=${encodedParams}`
-      )
+      invoiceBackendAPI.get<{
+        invoices: InvoiceWithClientDetails[];
+        total: number;
+      }>(`/invoices?params=${encodedParams}`)
     );
   },
   getById: async function (id: string) {

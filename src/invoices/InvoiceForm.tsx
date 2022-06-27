@@ -111,7 +111,7 @@ export default function InvoiceForm(props: InvoiceDetailsFormProps) {
     if (invoice) {
       reset(invoice);
     }
-  }, [invoice]);
+  }, [reset, invoice]);
 
   return (
     <Box

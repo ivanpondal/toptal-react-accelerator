@@ -5,7 +5,7 @@ import {
   DataTestLoadingOverlay,
   DataTestNoRowsOverlay,
   DataTestRow,
-} from "../components/data-test-grid";
+} from "../components/custom-grid";
 import { ContextMenu } from "../components/ContextMenu";
 
 const columns: GridColDef[] = [
