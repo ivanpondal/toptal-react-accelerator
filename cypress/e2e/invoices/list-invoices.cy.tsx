@@ -14,6 +14,13 @@ describe("/invoices", () => {
     cy.location("pathname").should("eq", "/");
   });
 
+  it("cannot access invoices when logged out", () => {
+    cy.clearCookies();
+
+    cy.visit("http://localhost:3000/invoices");
+    cy.location("pathname").should("eq", "/login");
+  });
+
   it("can navigate to all invoices by clicking button on dashboard", () => {
     cy.get(`[data-test='view-all-invoices']`).should("be.visible").click();
     cy.location("pathname").should("eq", "/invoices");
