@@ -82,4 +82,18 @@ describe("/invoices", () => {
     cy.location("search").should("eq", "?page=1");
     cy.get(`[data-test="invoice-row-ms1"]`).should("be.visible");
   });
+
+  it("can filter by company name", () => {
+    cy.get(`[data-test='view-all-invoices']`).should("be.visible").click();
+    // wait until no longer in dashboard
+    cy.get(`[data-test='view-all-clients']`).should("not.exist");
+    cy.location("pathname").should("eq", "/invoices");
+
+    cy.get(`[data-test="invoice-row-ms1"]`).should("be.visible");
+    cy.get("button").contains("Filters").should("be.visible").click();
+
+    cy.get("input").type("Apple{downArrow}{enter}{esc}");
+    cy.location("search").should("eq", "?companyFilter=Apple");
+    cy.get(`[data-test="invoice-row-ap1"]`).should("be.visible");
+  });
 });
