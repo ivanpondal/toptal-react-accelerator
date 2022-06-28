@@ -1,8 +1,12 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { request as gqlRequest, gql } from "graphql-request";
+import { request } from "http";
 
 export const invoiceBackendAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
 });
+
+const graphqlBaseURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`;
 
 async function executeRequest<T>(
   request: () => Promise<AxiosResponse<T, any>>
@@ -136,6 +140,23 @@ export type ClientName = {
   companyName: string;
 };
 
+const getAllClientsQuery = gql`
+  {
+    clients(limit: 10, offset: 0) {
+      results {
+        id
+        name
+        companyDetails {
+          name
+        }
+        totalBilled
+        invoicesCount
+      }
+      total
+    }
+  }
+`;
+
 export const ClientAPI = {
   getAll: async function (params: {
     sort?: ClientListingSorting;
@@ -168,6 +189,29 @@ export const ClientAPI = {
     return await executeRequest(() =>
       invoiceBackendAPI.get<{ clients: Array<ClientName> }>("/clients/names")
     );
+  },
+
+  gqlGetAll: async function (params: {
+    sort?: ClientListingSorting;
+    limit?: number;
+  }) {
+    try {
+      const requestResponse = await gqlRequest<{
+        clients: {
+          results: {
+            id: string;
+            name: string;
+            companyDetails: { name: string };
+            totalBilled: number;
+            invoicesCount: number;
+          }[];
+        };
+        total: number;
+      }>(graphqlBaseURL, getAllClientsQuery);
+      return requestResponse;
+    } catch (error) {
+      return Promise.reject("Unkown Error");
+    }
   },
 };
 

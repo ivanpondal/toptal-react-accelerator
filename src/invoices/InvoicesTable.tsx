@@ -188,7 +188,7 @@ export const InvoicesTable = (
           Cell: DataTestCell("invoice"),
           NoRowsOverlay: DataTestNoRowsOverlay,
           NoResultsOverlay: DataTestNoRowsOverlay,
-          Toolbar: CustomToolbar,
+          Toolbar: filtering ? CustomToolbar : null,
           Pagination: CustomPagination,
         }}
         componentsProps={{

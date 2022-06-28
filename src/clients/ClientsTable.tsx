@@ -49,14 +49,16 @@ const columns: GridColDef[] = [
   },
 ];
 
+export type TableClient = {
+  totalBilled: number;
+  invoicesCount: number;
+  id: string;
+  name: string;
+  companyName: string;
+};
+
 export default function ClientsTable(props: {
-  clients: Array<{
-    totalBilled: number;
-    invoicesCount: number;
-    id: string;
-    name: string;
-    companyName: string;
-  }>;
+  clients: Array<TableClient>;
   loading: boolean;
   onRowClick: (rowId: GridRowId) => unknown;
 }) {
