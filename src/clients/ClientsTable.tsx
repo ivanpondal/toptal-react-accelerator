@@ -1,36 +1,39 @@
 import { DataGrid, GridColDef, GridRowId } from "@mui/x-data-grid";
-import { ClientInvoicesAggregate } from "../api/base";
 import {
+  CustomPagination,
   DataTestCell,
   DataTestLoadingOverlay,
   DataTestNoRowsOverlay,
   DataTestRow,
+  GridPaginationProps,
+  GridSortingProps,
+  PAGE_SIZE,
 } from "../components/custom-grid";
 import { ContextMenu } from "../components/ContextMenu";
 
-const columns: GridColDef[] = [
+const columns: (sortable: boolean) => GridColDef[] = (sortable) => [
   {
     field: "name",
     headerName: "Name",
-    sortable: false,
+    sortable: sortable,
   },
   {
     field: "companyName",
     headerName: "Company name",
     flex: 1.5,
-    sortable: false,
+    sortable: sortable,
   },
   {
     field: "totalBilled",
     headerName: "Total billed",
-    sortable: false,
+    sortable: sortable,
     type: "number",
   },
   {
     field: "invoicesCount",
     headerName: "Invoice count",
     flex: 1.5,
-    sortable: false,
+    sortable: sortable,
     type: "number",
   },
   {
@@ -49,24 +52,40 @@ const columns: GridColDef[] = [
   },
 ];
 
-export default function ClientsTable(props: {
-  clients: Array<{
-    totalBilled: number;
-    invoicesCount: number;
-    id: string;
-    name: string;
-    companyName: string;
-  }>;
-  loading: boolean;
-  onRowClick: (rowId: GridRowId) => unknown;
-}) {
-  const { clients, loading, onRowClick } = props;
+export type TableClient = {
+  totalBilled: number;
+  invoicesCount: number;
+  id: string;
+  name: string;
+  companyName: string;
+};
+
+export default function ClientsTable(
+  props: {
+    clients: Array<TableClient>;
+    loading: boolean;
+    onRowClick: (rowId: GridRowId) => unknown;
+  } & GridPaginationProps &
+    GridSortingProps
+) {
+  const {
+    clients,
+    loading,
+    onRowClick,
+    sortModel,
+    onSortModelChange,
+    sortable = false,
+    pagination,
+    page,
+    totalRowCount,
+    onPageChange,
+  } = props;
   return (
     <div data-test="clients-table">
       <DataGrid
-        columns={columns}
+        columns={columns(sortable)}
         rows={clients}
-        hideFooter
+        hideFooter={!pagination}
         disableColumnMenu
         autoHeight
         loading={loading}
@@ -76,7 +95,19 @@ export default function ClientsTable(props: {
           Row: DataTestRow("client"),
           Cell: DataTestCell("client"),
           NoRowsOverlay: DataTestNoRowsOverlay,
+          NoResultsOverlay: DataTestNoRowsOverlay,
+          Pagination: CustomPagination,
         }}
+        sortModel={sortModel}
+        onSortModelChange={onSortModelChange}
+        sortingMode="server"
+        pagination={pagination}
+        paginationMode={pagination ? "server" : "client"}
+        rowCount={totalRowCount}
+        pageSize={PAGE_SIZE}
+        rowsPerPageOptions={[PAGE_SIZE]}
+        onPageChange={onPageChange}
+        page={page ? page - 1 : undefined}
       />
     </div>
   );

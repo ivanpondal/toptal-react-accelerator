@@ -1,17 +1,17 @@
 import { Container } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { AuthGuard } from "../src/auth/AuthGuard";
-import { CompanyDetailsGuard } from "../src/company/CompanyDetailsGuard";
-import parseQueryParam from "../src/integration/query-params";
+import { AuthGuard } from "../../src/auth/AuthGuard";
+import { CompanyDetailsGuard } from "../../src/company/CompanyDetailsGuard";
+import parseQueryParam from "../../src/integration/query-params";
 import {
   InvoiceSortingParams,
   InvoiceSortingField,
   isInvoiceSortingField,
-  InvoiceSortingOrder,
-  isInvoiceSortingOrder,
-} from "../src/invoices/invoice-list-types";
-import { InvoiceListContainer } from "../src/invoices/InvoiceListContainer";
+  SortingOrder,
+  isSortingOrder,
+} from "../../src/invoices/invoice-list-types";
+import { InvoiceListContainer } from "../../src/invoices/InvoiceListContainer";
 
 export default function InvoiceList() {
   const router = useRouter();
@@ -34,8 +34,8 @@ export default function InvoiceList() {
           router.query.sortOrder
         )?.toLowerCase();
 
-        let sortingOrder: InvoiceSortingOrder | undefined;
-        if (parsedSortOrder && isInvoiceSortingOrder(parsedSortOrder)) {
+        let sortingOrder: SortingOrder | undefined;
+        if (parsedSortOrder && isSortingOrder(parsedSortOrder)) {
           sortingOrder = parsedSortOrder;
         }
 

@@ -2,7 +2,6 @@ import {
   GridRowId,
   DataGrid,
   GridColDef,
-  GridSortModel,
   getGridStringOperators,
   GridFilterModel,
 } from "@mui/x-data-grid";
@@ -17,6 +16,9 @@ import {
   CustomToolbar,
   CustomPagination,
   DataGridHeader,
+  GridPaginationProps,
+  PAGE_SIZE,
+  GridSortingProps,
 } from "../components/custom-grid";
 
 const columns: (
@@ -121,18 +123,6 @@ export type TableInvoice = {
   total: number;
 };
 
-export type GridSortingProps = {
-  sortable?: boolean;
-  sortModel?: GridSortModel;
-  onSortModelChange?: (model: GridSortModel) => void;
-};
-
-export type GridPaginationProps = {
-  pagination?: true;
-  page?: number;
-  totalRowCount?: number;
-  onPageChange?: (pageNumber: number) => void;
-};
 
 export type GridFilteringProps = {
   filtering?: true;
@@ -141,7 +131,6 @@ export type GridFilteringProps = {
   selectedClientName?: string;
 };
 
-const PAGE_SIZE = 10;
 
 export const InvoicesTable = (
   props: {
@@ -188,7 +177,7 @@ export const InvoicesTable = (
           Cell: DataTestCell("invoice"),
           NoRowsOverlay: DataTestNoRowsOverlay,
           NoResultsOverlay: DataTestNoRowsOverlay,
-          Toolbar: CustomToolbar,
+          Toolbar: filtering ? CustomToolbar : null,
           Pagination: CustomPagination,
         }}
         componentsProps={{
