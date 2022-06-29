@@ -148,8 +148,8 @@ export type ClientName = {
 };
 
 const getAllClientsQuery = gql`
-  query getAllClients($offset: Int!, $limit: Int!) {
-    clients(limit: $limit, offset: $offset) {
+  query getAllClients($sort: ClientListSortSchema, $offset: Int!, $limit: Int!) {
+    clients(sort: $sort, limit: $limit, offset: $offset) {
       results {
         id
         name
@@ -203,7 +203,15 @@ export const ClientAPI = {
     offset?: number;
     limit?: number;
   }) {
-    const { offset = 0, limit = 10 } = params;
+    const { sort, offset = 0, limit = 10 } = params;
+
+    let apiSortModel;
+    if (sort && sort.field) {
+      apiSortModel = {
+        [sort.field]: sort.order,
+      };
+    }
+
     try {
       if (!graphQLClient) {
         throw new Error("GraphQL client not initialized");
@@ -219,7 +227,11 @@ export const ClientAPI = {
           }[];
           total: number;
         };
-      }>(getAllClientsQuery, { offset: offset, limit: limit });
+      }>(getAllClientsQuery, {
+        sort: apiSortModel,
+        offset: offset,
+        limit: limit,
+      });
       return requestResponse;
     } catch (error) {
       return Promise.reject("Unkown Error");
