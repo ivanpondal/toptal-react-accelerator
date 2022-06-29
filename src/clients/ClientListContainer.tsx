@@ -7,7 +7,8 @@ import { useAsync } from "../hooks/useAsync";
 import { useCallback, useEffect } from "react";
 import { ClientAPI } from "../api/base";
 
-export const ClientListContainer = (props: {}) => {
+export const ClientListContainer = (props: { page?: number }) => {
+  const { page } = props;
   let errorMessage = "";
 
   const {
@@ -23,7 +24,7 @@ export const ClientListContainer = (props: {}) => {
             companyName: client.companyDetails.name,
             ...client,
           })),
-          total: res.total,
+          total: res.clients.total,
         })),
       []
     )
@@ -43,7 +44,7 @@ export const ClientListContainer = (props: {}) => {
   return (
     <div style={{ display: "block" }}>
       {errorMessage && (
-        <Alert sx={{ mb: 1 }} severity="error" data-test="invoices-fetch-error">
+        <Alert sx={{ mb: 1 }} severity="error" data-test="clients-fetch-error">
           {errorMessage}
         </Alert>
       )}
@@ -52,8 +53,8 @@ export const ClientListContainer = (props: {}) => {
         <Typography variant="h5" sx={{ flexGrow: 1 }}>
           Clients
         </Typography>
-        <Link href="/invoices/new" passHref>
-          <IconButton data-test="add-invoice">
+        <Link href="/clients/new" passHref>
+          <IconButton data-test="add-client">
             <AddBoxIcon color="primary" />
           </IconButton>
         </Link>
@@ -65,10 +66,9 @@ export const ClientListContainer = (props: {}) => {
         // sortable={true}
         // sortModel={tableSortModel}
         // onSortModelChange={(_) => {}}
-        // pagination
-        // onPageChange={(_) => {}}
-        // page={1}
-        // totalRowCount={10}
+        pagination
+        page={page}
+        totalRowCount={totalClients}
       />
     </div>
   );

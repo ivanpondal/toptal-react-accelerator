@@ -1,10 +1,12 @@
 import { DataGrid, GridColDef, GridRowId } from "@mui/x-data-grid";
-import { ClientInvoicesAggregate } from "../api/base";
 import {
+  CustomPagination,
   DataTestCell,
   DataTestLoadingOverlay,
   DataTestNoRowsOverlay,
   DataTestRow,
+  GridPaginationProps,
+  PAGE_SIZE,
 } from "../components/custom-grid";
 import { ContextMenu } from "../components/ContextMenu";
 
@@ -57,18 +59,28 @@ export type TableClient = {
   companyName: string;
 };
 
-export default function ClientsTable(props: {
-  clients: Array<TableClient>;
-  loading: boolean;
-  onRowClick: (rowId: GridRowId) => unknown;
-}) {
-  const { clients, loading, onRowClick } = props;
+export default function ClientsTable(
+  props: {
+    clients: Array<TableClient>;
+    loading: boolean;
+    onRowClick: (rowId: GridRowId) => unknown;
+  } & GridPaginationProps
+) {
+  const {
+    clients,
+    loading,
+    onRowClick,
+    pagination,
+    page,
+    totalRowCount,
+    onPageChange,
+  } = props;
   return (
     <div data-test="clients-table">
       <DataGrid
         columns={columns}
         rows={clients}
-        hideFooter
+        hideFooter={!pagination}
         disableColumnMenu
         autoHeight
         loading={loading}
@@ -78,7 +90,16 @@ export default function ClientsTable(props: {
           Row: DataTestRow("client"),
           Cell: DataTestCell("client"),
           NoRowsOverlay: DataTestNoRowsOverlay,
+          NoResultsOverlay: DataTestNoRowsOverlay,
+          Pagination: CustomPagination,
         }}
+        pagination={pagination}
+        paginationMode={pagination ? "server" : "client"}
+        rowCount={totalRowCount}
+        pageSize={PAGE_SIZE}
+        rowsPerPageOptions={[PAGE_SIZE]}
+        onPageChange={onPageChange}
+        page={page ? page - 1 : undefined}
       />
     </div>
   );

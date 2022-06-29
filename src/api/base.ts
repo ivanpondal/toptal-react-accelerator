@@ -205,8 +205,8 @@ export const ClientAPI = {
             totalBilled: number;
             invoicesCount: number;
           }[];
+          total: number;
         };
-        total: number;
       }>(graphqlBaseURL, getAllClientsQuery);
       return requestResponse;
     } catch (error) {

@@ -122,3 +122,12 @@ export function DataGridHeader(
     </div>
   );
 }
+
+export type GridPaginationProps = {
+  pagination?: true;
+  page?: number;
+  totalRowCount?: number;
+  onPageChange?: (pageNumber: number) => void;
+};
+
+export const PAGE_SIZE = 10;

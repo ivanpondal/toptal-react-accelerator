@@ -17,6 +17,8 @@ import {
   CustomToolbar,
   CustomPagination,
   DataGridHeader,
+  GridPaginationProps,
+  PAGE_SIZE,
 } from "../components/custom-grid";
 
 const columns: (
@@ -127,12 +129,6 @@ export type GridSortingProps = {
   onSortModelChange?: (model: GridSortModel) => void;
 };
 
-export type GridPaginationProps = {
-  pagination?: true;
-  page?: number;
-  totalRowCount?: number;
-  onPageChange?: (pageNumber: number) => void;
-};
 
 export type GridFilteringProps = {
   filtering?: true;
@@ -141,7 +137,6 @@ export type GridFilteringProps = {
   selectedClientName?: string;
 };
 
-const PAGE_SIZE = 10;
 
 export const InvoicesTable = (
   props: {
