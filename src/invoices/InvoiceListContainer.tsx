@@ -170,7 +170,7 @@ export const InvoiceListContainer = (props: {
           const companyFilter =
             filterModel.items.length === 0 ? null : filterModel.items[0].value;
           router.push(
-            `invoices${renderQueryParams({
+            `/invoices${renderQueryParams({
               companyFilter: companyFilter,
             })}`
           );

@@ -16,6 +16,7 @@ import {
   useGridSelector,
   GridColumnHeaderParams,
   GridColumnHeaderTitle,
+  GridSortModel,
 } from "@mui/x-data-grid";
 import React from "react";
 
@@ -122,6 +123,12 @@ export function DataGridHeader(
     </div>
   );
 }
+
+export type GridSortingProps = {
+  sortable?: boolean;
+  sortModel?: GridSortModel;
+  onSortModelChange?: (model: GridSortModel) => void;
+};
 
 export type GridPaginationProps = {
   pagination?: true;

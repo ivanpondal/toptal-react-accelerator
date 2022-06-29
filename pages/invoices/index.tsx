@@ -8,8 +8,8 @@ import {
   InvoiceSortingParams,
   InvoiceSortingField,
   isInvoiceSortingField,
-  InvoiceSortingOrder,
-  isInvoiceSortingOrder,
+  SortingOrder,
+  isSortingOrder,
 } from "../../src/invoices/invoice-list-types";
 import { InvoiceListContainer } from "../../src/invoices/InvoiceListContainer";
 
@@ -34,8 +34,8 @@ export default function InvoiceList() {
           router.query.sortOrder
         )?.toLowerCase();
 
-        let sortingOrder: InvoiceSortingOrder | undefined;
-        if (parsedSortOrder && isInvoiceSortingOrder(parsedSortOrder)) {
+        let sortingOrder: SortingOrder | undefined;
+        if (parsedSortOrder && isSortingOrder(parsedSortOrder)) {
           sortingOrder = parsedSortOrder;
         }
 

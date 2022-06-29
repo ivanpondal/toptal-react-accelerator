@@ -6,33 +6,34 @@ import {
   DataTestNoRowsOverlay,
   DataTestRow,
   GridPaginationProps,
+  GridSortingProps,
   PAGE_SIZE,
 } from "../components/custom-grid";
 import { ContextMenu } from "../components/ContextMenu";
 
-const columns: GridColDef[] = [
+const columns: (sortable: boolean) => GridColDef[] = (sortable) => [
   {
     field: "name",
     headerName: "Name",
-    sortable: false,
+    sortable: sortable,
   },
   {
     field: "companyName",
     headerName: "Company name",
     flex: 1.5,
-    sortable: false,
+    sortable: sortable,
   },
   {
     field: "totalBilled",
     headerName: "Total billed",
-    sortable: false,
+    sortable: sortable,
     type: "number",
   },
   {
     field: "invoicesCount",
     headerName: "Invoice count",
     flex: 1.5,
-    sortable: false,
+    sortable: sortable,
     type: "number",
   },
   {
@@ -64,12 +65,16 @@ export default function ClientsTable(
     clients: Array<TableClient>;
     loading: boolean;
     onRowClick: (rowId: GridRowId) => unknown;
-  } & GridPaginationProps
+  } & GridPaginationProps &
+    GridSortingProps
 ) {
   const {
     clients,
     loading,
     onRowClick,
+    sortModel,
+    onSortModelChange,
+    sortable = false,
     pagination,
     page,
     totalRowCount,
@@ -78,7 +83,7 @@ export default function ClientsTable(
   return (
     <div data-test="clients-table">
       <DataGrid
-        columns={columns}
+        columns={columns(sortable)}
         rows={clients}
         hideFooter={!pagination}
         disableColumnMenu
@@ -93,6 +98,9 @@ export default function ClientsTable(
           NoResultsOverlay: DataTestNoRowsOverlay,
           Pagination: CustomPagination,
         }}
+        sortModel={sortModel}
+        onSortModelChange={onSortModelChange}
+        sortingMode="server"
         pagination={pagination}
         paginationMode={pagination ? "server" : "client"}
         rowCount={totalRowCount}

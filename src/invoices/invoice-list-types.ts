@@ -13,17 +13,15 @@ export function isInvoiceSortingField(
   return invoiceSortingFields.includes(value as InvoiceSortingField);
 }
 
-const invoiceSortingOrders = ["asc", "desc"] as const;
-type InvoiceSortingOrderTuple = typeof invoiceSortingOrders;
-export type InvoiceSortingOrder = InvoiceSortingOrderTuple[number];
+const sortingOrders = ["asc", "desc"] as const;
+type sortingOrderTuple = typeof sortingOrders;
+export type SortingOrder = sortingOrderTuple[number];
 
-export function isInvoiceSortingOrder(
-  value: string
-): value is InvoiceSortingOrder {
-  return invoiceSortingOrders.includes(value as InvoiceSortingOrder);
+export function isSortingOrder(value: string): value is SortingOrder {
+  return sortingOrders.includes(value as SortingOrder);
 }
 
 export type InvoiceSortingParams = {
   field?: InvoiceSortingField;
-  order?: "asc" | "desc";
+  order?: SortingOrder;
 };

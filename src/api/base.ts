@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { GraphQLClient, request as gqlRequest, gql } from "graphql-request";
+import { ClientSortingParams } from "../clients/client-list-types";
 
 export const invoiceBackendAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -197,7 +198,11 @@ export const ClientAPI = {
     );
   },
 
-  gqlGetAll: async function (params: { offset?: number; limit?: number }) {
+  gqlGetAll: async function (params: {
+    sort?: ClientSortingParams;
+    offset?: number;
+    limit?: number;
+  }) {
     const { offset = 0, limit = 10 } = params;
     try {
       if (!graphQLClient) {

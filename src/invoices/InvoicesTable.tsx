@@ -2,7 +2,6 @@ import {
   GridRowId,
   DataGrid,
   GridColDef,
-  GridSortModel,
   getGridStringOperators,
   GridFilterModel,
 } from "@mui/x-data-grid";
@@ -19,6 +18,7 @@ import {
   DataGridHeader,
   GridPaginationProps,
   PAGE_SIZE,
+  GridSortingProps,
 } from "../components/custom-grid";
 
 const columns: (
@@ -121,12 +121,6 @@ export type TableInvoice = {
   dueDate: number;
   project?: string;
   total: number;
-};
-
-export type GridSortingProps = {
-  sortable?: boolean;
-  sortModel?: GridSortModel;
-  onSortModelChange?: (model: GridSortModel) => void;
 };
 
 

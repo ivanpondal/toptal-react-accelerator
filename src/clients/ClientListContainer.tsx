@@ -6,9 +6,13 @@ import ClientsTable, { TableClient } from "./ClientsTable";
 import { useAsync } from "../hooks/useAsync";
 import { useCallback, useEffect } from "react";
 import { ClientAPI } from "../api/base";
+import { ClientSortingParams } from "./client-list-types";
 
-export const ClientListContainer = (props: { page?: number }) => {
-  const { page } = props;
+export const ClientListContainer = (props: {
+  sorting?: ClientSortingParams;
+  page?: number;
+}) => {
+  const { sorting, page } = props;
   let errorMessage = "";
 
   const {
@@ -36,26 +40,48 @@ export const ClientListContainer = (props: { page?: number }) => {
     if (page) {
       offset = (page - 1) * limit;
     }
-    execute({ limit: 10, offset: offset });
-  }, [execute, page]);
+    execute({ sort: sorting, limit: 10, offset: offset });
+  }, [execute, sorting, page]);
 
   const renderQueryParams = useCallback(
-    (params: { pageNumber?: number }) => {
-      const { pageNumber = page } = params;
+    (params: {
+      sortingParams?: ClientSortingParams | null;
+      pageNumber?: number;
+    }) => {
+      const { sortingParams = sorting, pageNumber = page } = params;
 
       let paginationQueryParam;
       if (pageNumber) {
         paginationQueryParam = `page=${pageNumber}`;
       }
 
-      let queryParams = [paginationQueryParam]
+      let sortingQueryParam;
+      if (sortingParams) {
+        sortingQueryParam = `sortBy=${
+          sortingParams.field
+        }&sortOrder=${sortingParams.order?.toUpperCase()}`;
+      } else if (sortingParams === null) {
+        sortingQueryParam = undefined;
+      }
+
+      let queryParams = [paginationQueryParam, sortingQueryParam]
         .filter((value) => value !== undefined)
         .join("&");
 
       return queryParams ? `?${queryParams}` : "";
     },
-    [page]
+    [sorting, page]
   );
+
+  const tableSortModel = sorting
+    ? [
+        {
+          field:
+            sorting.field === "clientName" ? "name" : (sorting.field as string),
+          sort: sorting.order,
+        },
+      ]
+    : [];
 
   let totalClients = 0;
   let clients: TableClient[] = [];
@@ -86,14 +112,26 @@ export const ClientListContainer = (props: { page?: number }) => {
         clients={clients}
         loading={status === "pending"}
         onRowClick={(rowId) => router.push(`/clients/${rowId}`)}
-        // sortable={true}
-        // sortModel={tableSortModel}
-        // onSortModelChange={(_) => {}}
+        sortable={true}
+        sortModel={tableSortModel}
+        onSortModelChange={(model) => {
+          const sortingParams =
+            model.length === 0
+              ? null
+              : ({
+                  field:
+                    model[0].field === "name" ? "clientName" : model[0].field,
+                  order: model[0].sort,
+                } as ClientSortingParams);
+          router.push(
+            `/clients${renderQueryParams({ sortingParams: sortingParams })}`
+          );
+        }}
         pagination
         page={page}
         totalRowCount={totalClients}
         onPageChange={(page) =>
-          router.push(`clients${renderQueryParams({ pageNumber: page + 1 })}`)
+          router.push(`/clients${renderQueryParams({ pageNumber: page + 1 })}`)
         }
       />
     </div>
