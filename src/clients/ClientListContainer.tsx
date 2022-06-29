@@ -31,8 +31,31 @@ export const ClientListContainer = (props: { page?: number }) => {
   );
 
   useEffect(() => {
-    execute({ limit: 10 });
-  }, [execute]);
+    const limit = 10;
+    let offset = 0;
+    if (page) {
+      offset = (page - 1) * limit;
+    }
+    execute({ limit: 10, offset: offset });
+  }, [execute, page]);
+
+  const renderQueryParams = useCallback(
+    (params: { pageNumber?: number }) => {
+      const { pageNumber = page } = params;
+
+      let paginationQueryParam;
+      if (pageNumber) {
+        paginationQueryParam = `page=${pageNumber}`;
+      }
+
+      let queryParams = [paginationQueryParam]
+        .filter((value) => value !== undefined)
+        .join("&");
+
+      return queryParams ? `?${queryParams}` : "";
+    },
+    [page]
+  );
 
   let totalClients = 0;
   let clients: TableClient[] = [];
@@ -69,6 +92,9 @@ export const ClientListContainer = (props: { page?: number }) => {
         pagination
         page={page}
         totalRowCount={totalClients}
+        onPageChange={(page) =>
+          router.push(`clients${renderQueryParams({ pageNumber: page + 1 })}`)
+        }
       />
     </div>
   );

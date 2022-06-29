@@ -1,11 +1,11 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { request as gqlRequest, gql } from "graphql-request";
-import { request } from "http";
+import { GraphQLClient, request as gqlRequest, gql } from "graphql-request";
 
 export const invoiceBackendAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
 });
 
+let graphQLClient: GraphQLClient | undefined;
 const graphqlBaseURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`;
 
 async function executeRequest<T>(
@@ -71,6 +71,12 @@ export const UserAPI = {
         return Promise.reject(error);
       }
     );
+
+    graphQLClient = new GraphQLClient(graphqlBaseURL, {
+      headers: {
+        ["x-access-token"]: token,
+      },
+    });
   },
 
   login: async (params: { email: string; password: string }) => {
@@ -141,8 +147,8 @@ export type ClientName = {
 };
 
 const getAllClientsQuery = gql`
-  {
-    clients(limit: 10, offset: 0) {
+  query getAllClients($offset: Int!, $limit: Int!) {
+    clients(limit: $limit, offset: $offset) {
       results {
         id
         name
@@ -191,12 +197,13 @@ export const ClientAPI = {
     );
   },
 
-  gqlGetAll: async function (params: {
-    sort?: ClientListingSorting;
-    limit?: number;
-  }) {
+  gqlGetAll: async function (params: { offset?: number; limit?: number }) {
+    const { offset = 0, limit = 10 } = params;
     try {
-      const requestResponse = await gqlRequest<{
+      if (!graphQLClient) {
+        throw new Error("GraphQL client not initialized");
+      }
+      const requestResponse = await graphQLClient.request<{
         clients: {
           results: {
             id: string;
@@ -207,7 +214,7 @@ export const ClientAPI = {
           }[];
           total: number;
         };
-      }>(graphqlBaseURL, getAllClientsQuery);
+      }>(getAllClientsQuery, { offset: offset, limit: limit });
       return requestResponse;
     } catch (error) {
       return Promise.reject("Unkown Error");
