@@ -10,7 +10,7 @@ import { LatestInvoicesTableContainer } from "../src/invoices/LatestInvoicesTabl
 const Home: NextPage = () => {
   return (
     <AuthGuard>
-      <NavBarContainer />
+      <NavBarContainer activePage="home" />
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="lg">
           <Grid container spacing={2}>

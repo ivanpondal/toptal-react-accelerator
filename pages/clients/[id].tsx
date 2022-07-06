@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { AuthGuard } from "../../src/auth/AuthGuard";
 import ClientEditContainer from "../../src/clients/ClientEditContainer";
 import { CompanyDetailsGuard } from "../../src/company/CompanyDetailsGuard";
+import NavBarContainer from "../../src/components/NavBarContainer";
 
 export default function EditClient() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function EditClient() {
 
   return (
     <AuthGuard>
+      <NavBarContainer />
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="xs">
           <Box

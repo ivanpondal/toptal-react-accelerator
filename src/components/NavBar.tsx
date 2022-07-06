@@ -13,11 +13,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import Link from "next/link";
 
+export type AppPage = "login" | "signup" | "home" | "clients" | "invoices";
+
 export default function NavBar(props: {
   onLogout: () => unknown;
-  pages: { title: string; link: string }[];
+  activePage?: AppPage;
 }) {
-  const { onLogout, pages } = props;
+  const { onLogout, activePage } = props;
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -46,52 +48,59 @@ export default function NavBar(props: {
               color: "inherit",
               textDecoration: "none",
             }}
+            data-active={activePage === "home"}
           >
             INVOICE.APP
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page, index) => (
-                <Link key={index} href={page.link} passHref>
-                  <MenuItem>
-                    <Typography textAlign="center">{page.title}</Typography>
+          {!(activePage === "login" || activePage === "signup") && (
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                <Link href="/clients" passHref>
+                  <MenuItem data-active={activePage === "clients"}>
+                    <Typography textAlign="center">Clients</Typography>
                   </MenuItem>
                 </Link>
-              ))}
 
-              <MenuItem onClick={onLogout}>
-                <Typography textAlign="center">Logout</Typography>
-              </MenuItem>
-            </Menu>
-          </Box>
+                <Link href="/invoices" passHref>
+                  <MenuItem data-active={activePage === "invoices"}>
+                    <Typography textAlign="center">Invoices</Typography>
+                  </MenuItem>
+                </Link>
+
+                <MenuItem onClick={onLogout} data-test="logout-button">
+                  <Typography textAlign="center">Logout</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+          )}
           <Typography
             variant="h5"
             noWrap
@@ -111,22 +120,35 @@ export default function NavBar(props: {
             INVOICE.APP
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page, index) => (
-              <Link key={index} href={page.link} passHref>
-                <Button sx={{ my: 2, color: "white", display: "block" }}>
-                  {page.title}
+          {!(activePage === "login" || activePage === "signup") && (
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              <Link href="/clients" passHref>
+                <Button
+                  sx={{ my: 2, color: "white", display: "block" }}
+                  data-active={activePage === "clients"}
+                >
+                  Clients
                 </Button>
               </Link>
-            ))}
 
-            <Button
-              sx={{ my: 2, ml: "auto", color: "white", display: "block" }}
-              onClick={onLogout}
-            >
-              Logout
-            </Button>
-          </Box>
+              <Link href="/invoices" passHref>
+                <Button
+                  sx={{ my: 2, color: "white", display: "block" }}
+                  data-active={activePage === "invoices"}
+                >
+                  Invoices
+                </Button>
+              </Link>
+
+              <Button
+                sx={{ my: 2, ml: "auto", color: "white", display: "block" }}
+                onClick={onLogout}
+                data-test="logout-button"
+              >
+                Logout
+              </Button>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

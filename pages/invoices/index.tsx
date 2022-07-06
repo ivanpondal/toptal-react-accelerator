@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AuthGuard } from "../../src/auth/AuthGuard";
 import { CompanyDetailsGuard } from "../../src/company/CompanyDetailsGuard";
+import NavBarContainer from "../../src/components/NavBarContainer";
 import parseQueryParam from "../../src/integration/query-params";
 import {
   InvoiceSortingParams,
@@ -86,6 +87,7 @@ export default function InvoiceList() {
 
   return (
     <AuthGuard>
+      <NavBarContainer activePage="invoices" />
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="lg">
           <InvoiceListContainer
