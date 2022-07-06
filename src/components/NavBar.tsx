@@ -11,8 +11,13 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
+import Link from "next/link";
 
-export default function NavBar() {
+export default function NavBar(props: {
+  onLogout: () => unknown;
+  pages: { title: string; link: string }[];
+}) {
+  const { onLogout, pages } = props;
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -23,11 +28,9 @@ export default function NavBar() {
     setAnchorElNav(null);
   };
 
-  const pages = ["Invoices", "Clients", "Logout"];
-
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
+    <AppBar position="static" sx={{ mb: 2 }}>
+      <Container maxWidth="lg">
         <Toolbar disableGutters>
           <Typography
             variant="h6"
@@ -76,11 +79,17 @@ export default function NavBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+              {pages.map((page, index) => (
+                <Link key={index} href={page.link} passHref>
+                  <MenuItem>
+                    <Typography textAlign="center">{page.title}</Typography>
+                  </MenuItem>
+                </Link>
               ))}
+
+              <MenuItem onClick={onLogout}>
+                <Typography textAlign="center">Logout</Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <Typography
@@ -101,16 +110,22 @@ export default function NavBar() {
           >
             INVOICE.APP
           </Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
+            {pages.map((page, index) => (
+              <Link key={index} href={page.link} passHref>
+                <Button sx={{ my: 2, color: "white", display: "block" }}>
+                  {page.title}
+                </Button>
+              </Link>
             ))}
+
+            <Button
+              sx={{ my: 2, ml: "auto", color: "white", display: "block" }}
+              onClick={onLogout}
+            >
+              Logout
+            </Button>
           </Box>
         </Toolbar>
       </Container>
