@@ -4,10 +4,12 @@ import Container from "@mui/material/Container";
 import { AuthGuard } from "../src/auth/AuthGuard";
 import CompanyDetailsContainer from "../src/company/CompanyDetailsContainer";
 import { CompanyDetailsGuard } from "../src/company/CompanyDetailsGuard";
+import NavBarContainer from "../src/components/NavBarContainer";
 
 export default function CompanyDetails() {
   return (
     <AuthGuard>
+      <NavBarContainer />
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="xs">
           <Box

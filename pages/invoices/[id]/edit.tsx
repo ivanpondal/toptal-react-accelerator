@@ -5,6 +5,7 @@ import InvoiceUpdateContainer from "../../../src/invoices/InvoiceUpdateContainer
 import { useRouter } from "next/router";
 import { useEffect, useReducer } from "react";
 import parseQueryParam from "../../../src/integration/query-params";
+import NavBarContainer from "../../../src/components/NavBarContainer";
 
 // this is overkill, I wanted to play around with state management
 type InvoiceRouterStateAction = {
@@ -74,6 +75,7 @@ export default function EditInvoice() {
 
   return (
     <AuthGuard>
+      <NavBarContainer />
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="sm">
           <Box

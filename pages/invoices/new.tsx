@@ -2,11 +2,13 @@ import { Container, Box, Typography } from "@mui/material";
 import { AuthGuard } from "../../src/auth/AuthGuard";
 import ClientCreationContainer from "../../src/clients/ClientCreationContainer";
 import { CompanyDetailsGuard } from "../../src/company/CompanyDetailsGuard";
+import NavBarContainer from "../../src/components/NavBarContainer";
 import InvoiceCreationContainer from "../../src/invoices/InvoiceCreationContainer";
 
 export default function NewInvoice() {
   return (
     <AuthGuard>
+      <NavBarContainer />
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="sm">
           <Box
@@ -17,9 +19,7 @@ export default function NewInvoice() {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5">
-              Create invoice
-            </Typography>
+            <Typography variant="h5">Create invoice</Typography>
             <InvoiceCreationContainer />
           </Box>
         </Container>

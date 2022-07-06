@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import parseQueryParam from "../../../src/integration/query-params";
 import InvoiceViewerContainer from "../../../src/invoices/InvoiceViewerContainer";
+import NavBarContainer from "../../../src/components/NavBarContainer";
 
 export default function ViewInvoice() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function ViewInvoice() {
 
   return (
     <AuthGuard>
+      <NavBarContainer />
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="xl">
           <Box

@@ -9,6 +9,7 @@ import {
 } from "../../src/clients/client-list-types";
 import { ClientListContainer } from "../../src/clients/ClientListContainer";
 import { CompanyDetailsGuard } from "../../src/company/CompanyDetailsGuard";
+import NavBarContainer from "../../src/components/NavBarContainer";
 import parseQueryParam from "../../src/integration/query-params";
 import {
   SortingOrder,
@@ -71,6 +72,7 @@ export default function ClientList() {
 
   return (
     <AuthGuard>
+      <NavBarContainer activePage="clients" />
       <CompanyDetailsGuard>
         <Container component="main" maxWidth="lg">
           <ClientListContainer sorting={sortingParams} page={page} />
