@@ -22,7 +22,7 @@ export default function SignUpFormContainer() {
         query: { infoMessage: "Your account has been created successfully!" },
       });
     }
-  }, [signUpSuccessResponse]);
+  }, [signUpSuccessResponse, router]);
 
   let errorMessage;
   if (error === "Email already used by another account") {

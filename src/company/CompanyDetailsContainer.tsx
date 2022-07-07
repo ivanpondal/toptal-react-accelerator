@@ -60,7 +60,7 @@ export default function CompanyDetailsContainer() {
         );
       }
     }
-  }, [updateSuccessResponse]);
+  }, [updateSuccessResponse, firstLogin, router]);
 
   let errorMessage;
   if (error) {

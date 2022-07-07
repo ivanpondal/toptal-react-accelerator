@@ -52,7 +52,7 @@ export default function ClientEditContainer(props: { clientId: string }) {
         setLoadedClientDetails(true);
         setClientDetails(clientDetails);
       });
-  }, []);
+  }, [clientId]);
 
   if (!loadedClientDetails) {
     // loading

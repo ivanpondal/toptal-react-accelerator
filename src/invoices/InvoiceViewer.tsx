@@ -86,7 +86,7 @@ export default function InvoiceForm(props: InvoiceViewerProps) {
           data-test="invoice-project-code"
           className="invoiceHeader"
         >
-          "{invoice?.invoiceProjectCode}"
+          &quot;{invoice?.invoiceProjectCode}&quot;
         </Typography>
       ) : null}
 

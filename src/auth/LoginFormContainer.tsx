@@ -23,7 +23,7 @@ export default function LoginFormContainer() {
     if (loginSuccessResponse) {
       setAuthToken(loginSuccessResponse.token);
     }
-  }, [loginSuccessResponse]);
+  }, [loginSuccessResponse, setAuthToken]);
 
   let errorMessage;
   if (error === "Invalid Credentials") {
@@ -43,7 +43,7 @@ export default function LoginFormContainer() {
         errorMessage={errorMessage}
       />
       <NextLink href="/signup" passHref>
-        <Link variant="body2">Don't have an account? Sign Up</Link>
+        <Link variant="body2">Don&apos;t have an account? Sign Up</Link>
       </NextLink>
     </>
   );

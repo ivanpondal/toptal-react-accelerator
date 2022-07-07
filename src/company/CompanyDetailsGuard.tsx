@@ -19,7 +19,7 @@ export const CompanyDetailsGuard = (props: { children: ReactNode }) => {
         },
       });
     }
-  }, [user]);
+  }, [user, router]);
 
   return <>{props.children}</>;
 };

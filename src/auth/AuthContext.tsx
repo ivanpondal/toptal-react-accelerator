@@ -37,7 +37,7 @@ export const AuthContextProvider = (props: { children: ReactNode }) => {
       UserAPI.initApiToken(userToken, handleLogout);
       setInitialised(true);
     }
-  }, [userToken]);
+  }, [userToken, handleLogout]);
 
   // onMount
   useEffect(() => {
@@ -55,7 +55,7 @@ export const AuthContextProvider = (props: { children: ReactNode }) => {
       setAuthToken: persistToken,
       logout: handleLogout,
     }),
-    [userToken]
+    [userToken, persistToken, handleLogout]
   );
 
   if (!isContextInitialised) {
