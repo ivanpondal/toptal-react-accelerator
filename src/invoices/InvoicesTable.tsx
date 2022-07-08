@@ -202,7 +202,7 @@ export const InvoicesTable = (
             ? {
                 items: [
                   {
-                    columnField: "companyName",
+                    columnField: "company",
                     value: selectedClientName,
                     operatorValue: "equals",
                   },
