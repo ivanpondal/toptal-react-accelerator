@@ -34,7 +34,7 @@ const columns: (
     filterable: false,
   },
   {
-    field: "companyName",
+    field: "company",
     headerName: "Company name",
     flex: 1.75,
     sortable: sortable,
@@ -51,7 +51,7 @@ const columns: (
     ),
   },
   {
-    field: "creationDate",
+    field: "date",
     headerName: "Date",
     flex: 1.25,
     sortable: sortable,
@@ -80,7 +80,7 @@ const columns: (
     filterable: false,
   },
   {
-    field: "total",
+    field: "price",
     headerName: "Price",
     sortable: sortable,
     filterable: false,
@@ -99,7 +99,6 @@ const columns: (
     filterable: false,
     renderCell: (params) => (
       <ContextMenu
-        dataTestId="invoice-actions"
         menuItems={[
           {
             href: `/invoices/${params.id}/view?print=true`,
@@ -116,13 +115,12 @@ const columns: (
 export type TableInvoice = {
   id: string;
   number: string;
-  companyName: string;
-  creationDate: number;
+  company: string;
+  date: number;
   dueDate: number;
   project?: string;
-  total: number;
+  price: number;
 };
-
 
 export type GridFilteringProps = {
   filtering?: true;
@@ -130,7 +128,6 @@ export type GridFilteringProps = {
   filterClientNames?: { id: string; label: string }[];
   selectedClientName?: string;
 };
-
 
 export const InvoicesTable = (
   props: {

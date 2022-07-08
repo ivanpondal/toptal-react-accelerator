@@ -9,6 +9,30 @@ import { InvoiceSortingParams } from "./invoice-list-types";
 import { ClientAPI } from "../api/base";
 import { useAsync } from "../hooks/useAsync";
 
+function mapTableSortingFieldToQuery(field: string) {
+  switch (field) {
+    case "company":
+      return "companyName";
+    case "date":
+      return "creationDate";
+    case "price":
+      return "total";
+  }
+  return field;
+}
+
+function mapSortingQueryFieldToTable(field: string) {
+  switch (field) {
+    case "companyName":
+      return "company";
+    case "creationDate":
+      return "date";
+    case "total":
+      return "price";
+  }
+  return field;
+}
+
 export const InvoiceListContainer = (props: {
   sorting?: InvoiceSortingParams;
   page?: number;
@@ -100,7 +124,7 @@ export const InvoiceListContainer = (props: {
   const tableSortModel = sorting
     ? [
         {
-          field: sorting.field as string,
+          field: mapSortingQueryFieldToTable(sorting.field as string),
           sort: sorting.order,
         },
       ]
@@ -152,7 +176,7 @@ export const InvoiceListContainer = (props: {
             model.length === 0
               ? null
               : ({
-                  field: model[0].field,
+                  field: mapTableSortingFieldToQuery(model[0].field),
                   order: model[0].sort,
                 } as InvoiceSortingParams);
           router.push(

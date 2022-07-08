@@ -25,11 +25,11 @@ export const LatestInvoicesTableContainer = () => {
               return {
                 id: invoiceWithDetails.invoice.id,
                 number: invoiceWithDetails.invoice.invoice_number,
-                companyName: invoiceWithDetails.client.companyDetails.name,
-                creationDate: invoiceWithDetails.invoice.date,
+                company: invoiceWithDetails.client.companyDetails.name,
+                date: invoiceWithDetails.invoice.date,
                 dueDate: invoiceWithDetails.invoice.dueDate,
                 project: invoiceWithDetails.invoice.projectCode,
-                total: invoiceWithDetails.invoice.value,
+                price: invoiceWithDetails.invoice.value,
               };
             })
           ),
