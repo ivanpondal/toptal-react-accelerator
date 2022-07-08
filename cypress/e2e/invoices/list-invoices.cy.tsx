@@ -26,11 +26,11 @@ describe("/invoices", () => {
     cy.location("pathname").should("eq", "/invoices");
 
     cy.get(`[data-test="invoice-number"]`).should("be.visible");
-    cy.get(`[data-test="invoice-companyName"]`).should("be.visible");
-    cy.get(`[data-test="invoice-creationDate"]`).should("be.visible");
+    cy.get(`[data-test="invoice-company"]`).should("be.visible");
+    cy.get(`[data-test="invoice-date"]`).should("be.visible");
     cy.get(`[data-test="invoice-dueDate"]`).should("be.visible");
     cy.get(`[data-test="invoice-project"]`).should("be.visible");
-    cy.get(`[data-test="invoice-total"]`).should("be.visible");
+    cy.get(`[data-test="invoice-price"]`).should("be.visible");
   });
 
   it("can sort by company name", () => {
@@ -43,14 +43,14 @@ describe("/invoices", () => {
     cy.get('[data-test="company-name-header"]').should("be.visible").click();
     cy.location("search").should("eq", "?sortBy=companyName&sortOrder=ASC");
     cy.get(
-      `[data-test="invoice-row-ap23"] [data-test="invoice-companyName"]`
+      `[data-test="invoice-row-ap23"] [data-test="invoice-company"]`
     ).contains("Apple");
 
     // sort by company, desc
     cy.get('[data-test="company-name-header"]').should("be.visible").click();
     cy.location("search").should("eq", "?sortBy=companyName&sortOrder=DESC");
     cy.get(
-      `[data-test="invoice-row-ms1"] [data-test="invoice-companyName"]`
+      `[data-test="invoice-row-ms1"] [data-test="invoice-company"]`
     ).contains("Microsoft");
   });
 
@@ -64,14 +64,14 @@ describe("/invoices", () => {
     cy.get('[data-test="company-name-header"]').should("be.visible").click();
     cy.location("search").should("eq", "?sortBy=companyName&sortOrder=ASC");
     cy.get(
-      `[data-test="invoice-row-ap23"] [data-test="invoice-companyName"]`
+      `[data-test="invoice-row-ap23"] [data-test="invoice-company"]`
     ).contains("Apple");
 
     cy.reload();
 
     cy.location("search").should("eq", "?sortBy=companyName&sortOrder=ASC");
     cy.get(
-      `[data-test="invoice-row-ap23"] [data-test="invoice-companyName"]`
+      `[data-test="invoice-row-ap23"] [data-test="invoice-company"]`
     ).contains("Apple");
   });
 
@@ -104,3 +104,5 @@ describe("/invoices", () => {
     cy.get(`[data-test="invoice-row-ap1"]`).should("be.visible");
   });
 });
+
+export {};
